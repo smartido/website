@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env
+.output
+.env.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# contentlayer
+.contentlayer
