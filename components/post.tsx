@@ -31,7 +31,7 @@ export default function Post({ posts }) {
 
       <p className="font-mono flex text-xs text-neutral-500">
         <span className="flex-grow">
-          <span className="hidden md:inline">
+          {/* <span className="hidden md:inline">
             <span>
               <a
                 href="https://twitter.com/mrtnez_sara"
@@ -43,7 +43,7 @@ export default function Post({ posts }) {
             </span>
 
             <span className="mx-2">|</span>
-          </span>
+          </span> */}
 
           {/* since we will pre-render the relative time, over time it
            * will diverge with what the user relative time is, so we suppress the warning.
