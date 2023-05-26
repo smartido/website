@@ -12,13 +12,13 @@ function Logo() {
   return (
     <span className="font-bold text-md md:text-lg whitespace-nowrap">
       {pathname === "/" ? (
-        <span className="cursor-default pr-2">✺ Sara Martínez</span>
+        <span className="cursor-default pr-2">✺</span>
       ) : (
         <Link
           href="/"
           className="hover:text-black dark:hover:text-white p-2 -ml-2 transition-all"
         >
-          ✺ Sara Martínez
+          ✺
         </Link>
       )}
     </span>
