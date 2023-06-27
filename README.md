@@ -1,1 +1,1 @@
-[smartido.dev](https://smartido.dev)
+[www.smartido.dev](https://www.smartido.dev)
