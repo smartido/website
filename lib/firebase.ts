@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { initializeFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import type { FirebaseOptions } from 'firebase/app';
 
 const firebaseConfig: FirebaseOptions = {
@@ -7,9 +8,14 @@ const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase Authentication and get a reference to the service
+const auth = getAuth(app);
+
 const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 });
 
-export { db };
+export { db, auth };
