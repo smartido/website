@@ -7,7 +7,7 @@ import { Header } from 'components/header';
 
 export const revalidate = 60;
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <Header />
