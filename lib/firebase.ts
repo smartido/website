@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { initializeFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 import type { FirebaseOptions } from 'firebase/app';
 
 const firebaseConfig: FirebaseOptions = {
@@ -9,9 +8,8 @@ const firebaseConfig: FirebaseOptions = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
 });
 
-export { db, auth };
+export { db };
