@@ -5,7 +5,7 @@ import type { FirebaseOptions } from 'firebase/app';
 
 const firebaseConfig: FirebaseOptions = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY.replace(/\\n/g, '\n'),
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
 };
 
 // Initialize Firebase

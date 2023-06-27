@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-import useSWR from 'swr';
+import { useEffect, useRef, useState } from 'react';
+import { db } from '../../lib/firebase';
+import { doc, getDoc, increment, updateDoc } from 'firebase/firestore';
+//import useSWR from 'swr';
 
-type PostView = {
+/*type PostView = {
   count: string;
 };
 
@@ -14,7 +16,7 @@ async function fetcher<JSON = any>(
   const res = await fetch(input, init);
   
   return res.json();
-}
+}*/
 
 export default function Views({
   slug,
@@ -23,9 +25,12 @@ export default function Views({
   slug: string;
   trackView: boolean;
 }) {
-  const { data } = useSWR<PostView>(`/api/views/${slug}`, fetcher);
-  const views = new Number(data?.count || 0);
+  const didLogViewRef = useRef(false);
 
+  const [views, setViews] = useState(0);
+
+  /*const { data } = useSWR<PostView>(`/api/views/${slug}`, fetcher);
+  const views = new Number(data?.count || 0);
   useEffect(() => {
     const registerView = () =>
       fetch(`/api/views/${slug}`, {
@@ -34,6 +39,39 @@ export default function Views({
 
     if (trackView) {
       registerView();
+    }
+  }, [slug]);*/
+
+
+  useEffect(() => {
+    const fetchdata = async() => {
+      const docRef = doc(db, "posts", slug);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setViews(docSnap.data().count);
+      } else {
+        console.log("Unknown document");
+      }
+    }
+
+    fetchdata();
+
+    const registerView = async () => {
+      const docRef = doc(db, "posts", slug);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        await updateDoc(docRef, { count: increment(1) });
+        setViews(docSnap.data().count);
+      } else {
+        console.log("Unknown document");
+      }
+    }
+
+    if (!didLogViewRef.current && trackView) {
+      registerView();
+      didLogViewRef.current = true;
     }
   }, [slug]);
 

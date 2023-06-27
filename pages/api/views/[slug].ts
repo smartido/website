@@ -1,5 +1,5 @@
 import { db } from '../../../lib/firebase';
-import { doc, getDoc, updateDoc} from 'firebase/firestore';
+import { doc, getDoc, increment, updateDoc } from 'firebase/firestore';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
@@ -12,22 +12,19 @@ export default async function handler(
     return res.status(400).json({ message: 'Slug is required' });
   }
 
+  const docRef = doc(db, "posts", slug);
+  const docSnap = await getDoc(docRef);
+  
   if (req.method === 'POST') {
-    const docRef = doc(db, "posts", slug);
-    const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
-      await updateDoc(docRef, { count: docSnap.data().count + 1 });
-      return res.status(200).json({ count: docSnap.data().count + 1 });
+      await updateDoc(docRef, { count: increment(1) });
+      return res.status(200).json({ count: docSnap.data().count });
     } else {
       return res.status(400).json({ message: 'Unknown document' });
     }
   }
  
   if (req.method === 'GET') {
-    const docRef = doc(db, "posts", slug);
-    const docSnap = await getDoc(docRef);
-    
     if (docSnap.exists()) {
       return res.status(200).json({ count: docSnap.data().count });
     } else {
