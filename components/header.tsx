@@ -82,7 +82,7 @@ export function Header() {
                   </a>
                   <a
                     className="group"
-                    href="https://www.linkedin.com/in/smartido"
+                    href="https://www.linkedin.com/in/smartido/"
                     rel="noopener noreferrer"
                     target="_blank"                
                   >
