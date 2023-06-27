@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-type Error = {
+export default function Error({
+  error,
+  reset,
+}: {
   error: Error;
   reset: () => void;
-}
-
-export default function Error({ error, reset }: Error) {
+}) {
   useEffect(() => {
     console.error(error);
   }, [error]);

@@ -1,21 +1,16 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { Header } from "../components/header";
-import { Footer } from "../components/footer";
-import { themeEffect } from './theme-effect';
+import localFont from 'next/font/local';
+import { Footer } from 'components/footer';
 
-const inter = Inter({ subsets: ['latin'] });
+const hubot = localFont({
+  src: '../public/fonts/Hubot-Sans.woff2',
+  variable: '--font-hubot',
+})
 
 export const metadata: Metadata = {
-  title: "Sara Martínez's blog",
-  description: "Developer, writer, and creator.",
-  openGraph: {
-    title: "Sara Martínez's blog",
-    description: 'Developer, writer, and creator.',
-    url: "https://saramd.cat", //TODO
-    siteName: "Sara Martínez's blog",
-  },
+  title: 'Blog | Sara Martínez',
+  description: 'Web Developer',
   robots: {
     index: true,
     follow: true,
@@ -35,30 +30,20 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
 }) {
   return (
     <html
-      lang="ca"
-      className={`${inter.className} antialiased`}
+      lang='ca'
+      className={`antialiased ${hubot.variable}`}
       suppressHydrationWarning={true}
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(${themeEffect.toString()})();`,
-          }}
-        />
-      </head>
-
-      <body className="dark:text-white max-w-2xl m-auto">
-        <main className="p-6 pt-3 md:pt-6 min-h-screen">
-          <Header />
-
+      <body className='max-w-2xl m-auto'>
+        <main className='min-h-screen px-4 pb-6 pt-48'>
           {children}
         </main>
         
-        {/* <Footer /> */}
+        <Footer />
       </body>
     </html>
   )

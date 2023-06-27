@@ -1,0 +1,37 @@
+---
+title: 'Creant una rèplica del joc del Snake amb Python'
+publishedAt: '12-06-2023'
+summary: "Utilitzant Python i PyGame per reviure un clàssic."
+---
+
+Per posar a prova els meus coneixements de [Python](https://www.python.org/), vaig replicar el mític joc del [Snake](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). L’objectiu per aquest exercici era clonar la funcionalitat bàsica del joc original. Vaig utilitzar la biblioteca de subprogrames [PyGame](https://www.pygame.org/news) que està pensada per facilitar el desenvolupament de jocs per computador. Abans d'això no tenia cap experiència amb Pygame, així que ha estat un aprenentatge. Podeu accedir al codi complet al meu perfil de GitHub [aquí](https://github.com/smartido/snake-game).
+
+---
+
+### Disseny
+
+<Image
+  alt={`Space Invaders`}
+  src={`/images/snake-amb-python/snake.png`}
+  width={795}
+  height={620}
+/>
+
+Si mai heu jugat al Snake, coneixereu tots els elements familiars: la serp, l’aliment, els bonus, les parets i la puntuació. Tot i que hi ha moltes versions del joc, vaig intentar que la meva rèplica tingués un aspecte semblant al de la versió <i>old school</i> que incorporaven els telèfons Nokia 3310 de l’any 1988 👵. És a dir, un joc monocromàtic i d’aquells que tens la sensació que en qualsevol moment et pot entrar un pixel a l’ull.
+
+### Mecànica de joc
+
+El Snake és un videojoc mític dels anys 70 que consisteix en moure una serp dins d’una àrea de joc limitada per 4 parets mentre aquesta es va cruspint l’aliment. Cal evitar que la serp xoqui tant amb les parets com amb el seu propi cos. Cada cop que menja, creix una posició, sumant punts i augmentant la dificultat del joc.
+
+De tant en tant també apareix durant uns segons alguna criatura indefensa que suma punts extra al ser devorada. El jugador controla la direcció del cap de la serp ⬆️ ⬇️ ➡️ ⬅️, i el cos la segueix. Una restricció afegida és que no es pot aturar el moviment de la serp quan ha començat el joc ni fer un <i>moonwalk</i>, és dir, anar en sentit oposat a l’actual.
+
+La serp es mou a una velocitat constant al llarg de tota la partida. Per a controlar el refresc del moviment de la serp, està temporitzat amb la crida `clock.tick(60)` al cos del <i>game-loop</i> o bucle principal del joc; això fa que el programa faci 60 imatges per segon. Per modificar la velocitat de la serp, només cal augmentar o disminuir aquest paràmetre.
+
+Podeu veure un exemple del funcionament [aquí](https://www.youtube.com/watch?v=-t5DL45yCr8). Gaudiu-la! 
+
+### Recursos
+
+- [Python](https://www.python.org/)
+- [Pygame](https://www.pygame.org/news.html)
+- [Introducció als jocs amb pygame](http://gie.lsi.upc.edu/inf/temes/pygame/Introducci%C3%B3_als_jocs_amb_pygame/index.html)
+- [Snake Wiki](https://en.wikipedia.org/wiki/Snake_(video_game_genre))
