@@ -49,7 +49,7 @@ export default function Views({
 
   return (
     <span className="font-mono">
-      {`${views ? views.toLocaleString() + " views" : "-"}`}
+      {`${views ? views.toLocaleString() + " vistes" : "-"}`}
     </span>
   );
 }

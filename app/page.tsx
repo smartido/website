@@ -37,7 +37,7 @@ export default async function HomePage() {
             </div>
           </div>
           <p className="mt-7 md:mt-9 text-xl text-slate-800 dark:text-slate-200">
-            Benvinguts/udes al meu jardí digital on comparteixò allò que vaig aprenent sobre crear productes, convertint-me en millor desenvolupadora i fent créixer una carrera en el món de la tecnologia.
+            Benvinguts/udes al meu jardí digital on comparteixo allò que vaig aprenent sobre crear productes, convertint-me en millor desenvolupadora i fent créixer una carrera en el món de la tecnologia.
           </p>
           <div className="mt-8 md:mt-12 text-slate-800 dark:text-slate-200">
             <div className="flex items-center space-x-7 font-semibold">
