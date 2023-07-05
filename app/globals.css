@@ -64,6 +64,10 @@ table {
   margin: 0 !important;
 }
 
+.prose .callout > p:not(:last-child) {
+  padding-bottom: 1.25em;
+}
+
 [data-rehype-pretty-code-fragment] code {
   @apply grid min-w-full break-words rounded-none text-xs;
   counter-reset: line;

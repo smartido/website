@@ -1,0 +1,139 @@
+---
+title: 'Com vaig crear el meu blog amb Next.js'
+publishedAt: '04-07-2023'
+summary: "Una visió general de com vaig escollir les tecnologies, com vaig prendre decisions de disseny i quins recursos vaig trobar útils."
+---
+
+Si estàs pensant a crear-te el teu blog de desenvolupador, probablement et sentis aclaparat pel gran nombre d'eines i tecnologies disponibles per poder-ho fer.
+
+La meva prioritat alhora de crear aquest blog va ser, sobretot, trobar una solució que em permetés incloure <GradientText from="from-amber-300" via="via-purple-500" to="to-red-500">contingut totalment personalitzable</GradientText> en cada publicació. El primer que vaig pensar va ser utilizar *markdown*, però això em limitava al grapat d’elements HTML que pot representar.
+
+En aquesta entrada explicaré com funciona el meu blog, per si algú vol fer res semblant. No és un tutorial, sinó una descripció general de com l’he creat — com vaig escollir les tecnologies, com vaig decidir sobre el disseny, quins recursos vaig trobar útils i quins són els meus plans de futur.
+
+---
+
+### Tecnologies
+
+Per escollir les tecnologies em vaig basar en tres punts:
+
+- **Velocitat** — No volia tecnologies amb corbes d’aprenentatge pronunciades. Volia publicar ràpidament.
+- **Experiència de desenvolupament** — No volia que això fos una tortura. Volia utilitzar eines amb una experiència de desenvolupament agradable.
+- **Possibilitats d’aprenentatge** — Volia experimentar amb noves eines i fer-les servir al meu blog com a espai de proves.
+
+Finalment, vaig decidir utilitzar Next.js (*framework*), Firestore (base de dades), Vercel (desplegament), Tailwind CSS (estils) i MDX (l’ingredient clau 🔑).
+
+#### Next.js
+
+Aquest blog és una aplicació [Next.js](https://nextjs.org/).
+
+<Callout>
+  Next.js és un *framework* de React.js per crear aplicacions web modernes que configura automàticament les eines necessàries per poder començar. Això permet poder-se centrar en crear la lògica i la interfície de l’aplicació sense dedicar temps en preparar l’ecosistema.
+</Callout>
+
+Amb la nova versió [Next.js 13](https://nextjs.org/blog/next-13) tens dues formes de treballar: pots escollir fer-ho amb el directori `/pages`, utilitzant Pages Router com en les versions anteriors del *framework*; o fer-ho amb el nou directori `/app`, utilitzant App Router. Jo he optat per la segona opció, que inclou suport per [*layouts*](https://nextjs.org/blog/next-13#layouts), [components del servidor](https://nextjs.org/blog/next-13#server-components), [*streaming*](https://nextjs.org/blog/next-13#streaming) i [obtenció de dades](https://nextjs.org/blog/next-13#data-fetching). Costa acostumar-s’hi si vens de versions anteriors, però el futur és així.
+
+Personalment, m’agrada utilitzar Next.js perquè:
+
+- Em proporciona una experiència de desenvolupament molt bona amb configuració zero, com quan realitzes un canvi en el codi i es reflexa en l’aplicació quasi instantàniament ([Fast Refresh](https://nextjs.org/docs/architecture/fast-refresh)).
+- Em simplifica configurar coses que normalment són carregoses, com un gestor de paquets (*bundler*), [TypeScript](https://nextjs.org/docs/app/building-your-application/configuring/typescript) o [ESLint](https://nextjs.org/docs/app/building-your-application/configuring/eslint).
+- Integra avantatges de rendiment com divisió de codi automàtica, optimizació de [imatges](https://nextjs.org/docs/app/building-your-application/optimizing/images) i [fonts](https://nextjs.org/docs/app/building-your-application/optimizing/fonts), sistema d’[obtenció de dades](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching) simplificat, i [Turbopack](https://nextjs.org/docs/architecture/turbopack).
+
+#### Firestore
+
+Per emmagatzemar i sincronitzar coses com el número de vistes que té cada publicació utilizo [Firestore](https://firebase.google.com/docs/firestore?hl=es-419), una base de dades de documents (NoSQL) flexible, escalable i al núvol.
+
+Amb Firestore, la complexitat de crear un *backend* és reduïda. Pots definir fàcilment l’esquema dels teus documents, afegir o editar dades, i actualitzar les regles de seguretat amb [Firebase console](https://firebase.google.com/docs/firestore/using-console?hl=es-419). Les peticions a la base de dades pots fer-les directament des dels teus components [afegint el SDK de Firebase](https://firebase.google.com/docs/firestore/quickstart?hl=es-419) a la teva app Next.js. Tot sense sortir del teu repositori *frontend*.
+
+<Callout>
+  Firestore ofereix una quota gratuïta (pla Spark) per poder començar sense costos, però si el teu blog rep molt tràfic necessitaràs actualitzar la teva quota gratuïta a una de prepagament (Blaze).
+</Callout>
+
+#### Vercel
+
+Desplego aquest blog amb [Vercel](https://vercel.com/).
+
+Vaig escollir Vercel més que res perquè és l’empresa rere Next.js i imaginava que la plataforma estaria ben optimitzada. Després de provar-ho, confirmo que és estupenda.
+
+A través de la [integració de GitHub](https://vercel.com/docs/concepts/deployments/git/vercel-for-github) de Vercel, cada cop que faig un *push* a la meva branca *main* es desplega automàticament en pocs segons. Així puc concentrar-me en programar i deixar que Vercel s’encarregui del desplegament continu i de tota la màgia d’allotjar un lloc web distribuït globalment.
+
+#### Tailwind CSS
+
+Pels estils utilitzo [Tailwind](https://tailwindcss.com/), un *framework* de CSS que basa la implementació d’estils emprant classes d’utilitat predefinides com a primera opció (*utility-first*).
+
+A primera vista, Tailwind sembla horrorós. A mi m’ho semblava i he llegit les crítiques i les contestacions de l’autor (**[@adamwathan](https://twitter.com/adamwathan)**). Però, veient la seva popularitat, volia provar-ho i, oh, sorpresa! Resulta que no l’he odiat gens. Tot el contrari. M’ha resultat ràpid d’aprendre i ha accelerat el meu desenvolupament. En part, això ha estat així perquè proporciona:
+
+- [Documentació](https://tailwindcss.com/docs/installation) de fàcil navegació
+- Un cercador i uns exemples meravellosos
+- Una guía sobre com instal·lar Tailwind en [Next.js](https://tailwindcss.com/docs/guides/nextjs)
+- Extensions de VS Code, com [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) per autocompletar i no haver de consultar tants cops les referències de noms de classes a la documentació
+
+A més…
+
+- No deixes mai el teu JSX — canviar estils no implica canviar constantment de fixters per sincronitzar els noms de les classes amb les seves declaracions CSS.
+- No perds temps enginyant noms de classes per cada component.
+
+Fins aquest moment, crec que Tailwind promet, però necessitaria provar-ho en un projecte més gran per tenir una opinió més formada sobre el *framework*. No ho recomanaria si no vols noms de classes potencialment llargs o no et ve de gust aprendre la seva sintaxi.
+
+#### MDX
+
+MDX és una extensió de *markdown* que permet importar i utilitzar components React personalitzables. Això el converteix en una solució de *blogging* ideal, ja que si tens un blog de desenvolupador segurament voldràs publicacions interactives.
+
+Aquest és l'aspecte d'un fitxer *markdown*:
+
+```MDX showLineNumbers
+# Personatges preferits de Futurama
+
+Això és un paràgraf amb un **text en negreta**.
+
+1. Zoidberg
+2. Fry
+3. Professor Hubert Farnsworth
+```
+
+Quan s’utilitza en una aplicació web, el *markdown* s’ha de compilar; s’ha de transformar en HTML perquè el navegador l’entengui. Així, el *#* es converteix en un *tag* `<h1>`, el paràgraf en `<p>`, els ateriscs en `<strong>` i la llista en `<ul>`. Així només pots utilitzar els elements HTML que *markdown* coneix.
+
+Aquest és l'aspecte d'un fitxer MDX:
+
+```MDX showLineNumbers
+import PieChart from '../components/PieChart';
+
+Aquest paràgraf introdueix **visualització de dades**:
+
+<PieChart
+  title="Personatges preferits de Futurama"
+  data={[
+    { name: 'Zoidberg', value: 400 },
+    { name: 'Fry', value: 300 },
+    { name: 'Professor Hubert Farnsworth', value: 200 },
+  ]}
+/>
+```
+
+MDX va un pas més enllà, ja que permet incloure els teus propis elements i utilitzar-los en el teu contingut, en forma de components React. Per exemple, pots no limitar-te al text en *cursiva* i **negreta**; també pots tenir <GradientText from="from-amber-300" via="via-red-500" to="to-amber-300">text animat</GradientText>.
+
+<Callout emoji="💡">
+  **Per què no crear una aplicació React “estàndard” i renderitzar cada publicació en la seva ruta? Per què MDX?**
+
+  Es podria fer, però MDX té l’avantatge que *markdown* són dades. Pots extreure metadades de les publicacions, de forma que mostrar una llista ordenada de publicacions o filtrar-les és molt simple. Fer el mateix si cada publicació fos el seu propi component React no ho seria tant.  
+</Callout>
+---
+
+### Disseny
+
+Algunes persones m’han demanat si el disseny de la interfície l’havia fet jo.
+
+He dissenyat/creat tot el que es pot veure en aquest blog. Dissenyar no és una cosa que em surti de manera natural, però sí que he après alguns trucs:
+
+- Si el projecte/empresa on treballes té un sistema de disseny, dedica un temps a aprendre perquè les coses són com són. Els sistemes de disseny poden ser molt explícits sobre quin tipus de component s’hauria d’utilitzar i quan.
+- Quan treballis amb dissenyadors, intenta aprendre d’ells. Intenta entendre els motius que hi ha darrere els dissenys que implementes. De vegades tindràs la sort de treballar amb experts amb molt talent que estaran encantats d’ensenyar-te si mostres interès. 🌈
+- Busca referents a llocs com [dribble](https://dribbble.com/). Mai m’ha sorgit res des de zero. Combino el *layout* d’un referent que m’agrada, la tipografia d’un segon i els colors d’un tercer. Aprendre a combinar dissenys existents requereix pràctica, però és més ràpid que aprendre a crear dissenys atractius des de zero.
+
+Molts desenvolupadors creuen que per ser bo en disseny has de tenir dots artístics, però jo no ho crec, perquè com artista sóc horrible. Tampoc tinc l'objectiu de ser una gran dissenyadora, però introduint-me un xic en aquesta feina, m'he tornat prou competent en la part de disseny per a sentir-me bé amb allò que creo.
+
+---
+
+### El futur
+
+La meva idea és que sigui un blog que creixi amb mi i, amb una mica de sort, potser ajudi a algú en el seu camí. Encara no sé com ho faré, però de moment, estic contenta amb aquest punt de partida.
+
+Si tens alguna pregunta, *feedback* o suggeriment per aquest lloc, no dubtis a comunicar-te amb mi per [Twitter](https://twitter.com/delba_oliveira) o [GitHub](https://github.com/smartido/website)!

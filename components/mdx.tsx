@@ -34,10 +34,19 @@ function Callout(props) {
   );
 }
 
+function GradientText(props) {
+  return (
+    <span className={`font-bold bg-gradient-to-r ${props.from} ${props.via} ${props.to} text-transparent bg-clip-text bg-300% animate-gradient`}>
+      {props.children}
+    </span>
+  )
+}
+
 const mdxComponents = {
   Image: RoundedImage,
   a: A,
-  Callout
+  Callout,
+  GradientText
 };
 
 interface MdxProps {
