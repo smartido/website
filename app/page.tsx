@@ -7,6 +7,17 @@ import { Header } from 'components/header';
 
 export const revalidate = 60;
 
+function formatDate(date: string) {
+  const targetDate = new Date(date);
+
+  const fullDate = targetDate.toLocaleString('ca-es', {
+    month: 'short',
+    year: 'numeric',
+  });
+
+  return `${fullDate}`;
+}
+
 export default async function HomePage() {
   return (
     <>
@@ -136,7 +147,7 @@ export default async function HomePage() {
                   {post.title}
                 </h3>
                 <div className="flex flex-wrap space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                  <span>{post.publishedAt}</span>
+                  <span>{formatDate(post.publishedAt)}</span>
                   <span className="text-slate-00/30 dark:text-slate-400/30">·</span>
                   <Views slug={post.slug} trackView={false} />
                 </div>

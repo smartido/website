@@ -42,7 +42,7 @@
 }
 
 .prose pre {
-  @apply border bg-black border-gray-700/50 px-0;
+  @apply border bg-zinc-900 border-gray-700/50 px-0;
 }
 
 .prose code {
@@ -50,7 +50,7 @@
 }
 
 .prose pre code {
-  @apply p-0 border-none rounded-3xl bg-black dark:bg-black;
+  @apply p-0 border-none rounded-3xl bg-zinc-900 dark:bg-zinc-900;
 }
 
 table {

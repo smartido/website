@@ -3,6 +3,17 @@ import { allBlogs } from 'contentlayer/generated';
 import Views from './views';
 import { Header } from 'components/header';
 
+function formatDate(date: string) {
+  const targetDate = new Date(date);
+
+  const fullDate = targetDate.toLocaleString('ca-es', {
+    month: 'short',
+    year: 'numeric',
+  });
+
+  return `${fullDate}`;
+}
+
 export default async function BlogPage() {
   return (
     <>
@@ -43,7 +54,7 @@ export default async function BlogPage() {
                   {post.title}
                 </h3>
                 <div className="flex flex-wrap space-x-2 text-sm text-slate-500 dark:text-slate-400">
-                  <span>{post.publishedAt}</span>
+                  <span>{formatDate(post.publishedAt)}</span>
                   <span className="text-slate-500/30 dark:text-slate-400/30">·</span>
                   <Views slug={post.slug} trackView={false} />
                 </div>

@@ -4,6 +4,17 @@ import { allBlogs } from 'contentlayer/generated';
 import { Header } from 'components/header';
 import Views from '../views';
 
+function formatDate(date: string) {
+  const targetDate = new Date(date);
+
+  const fullDate = targetDate.toLocaleString('ca-es', {
+    month: 'short',
+    year: 'numeric',
+  });
+
+  return `${fullDate}`;
+}
+
 export default async function Blog({ params }) {
   const post = allBlogs.find((post) => post.slug === params.slug);
 
@@ -18,7 +29,7 @@ export default async function Blog({ params }) {
           {post.title}
         </h1>
         <div className="mt-2 mb-7 flex space-x-2 text-slate-500 dark:text-slate-400">
-          <span>{post.publishedAt}</span>
+          <span>{formatDate(post.publishedAt)}</span>
           <span className="text-slate-500/30 dark:text-slate-400/30">·</span>
           <Views slug={post.slug} trackView />
         </div>

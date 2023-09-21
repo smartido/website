@@ -1,0 +1,202 @@
+---
+title: 'Introduint "useLocalStorage", un hook de React per persistir l’estat'
+publishedAt: '2023-09-21'
+summary: "Un tutorial sobre com podem crear un hook personalitzat per emmagatzemar una part de l’estat de React al localStorage, i reinicialitzar des d’aquell valor al refrescar."
+---
+
+Suposem que creem una aplicació que ofereix l’opció d’activar el *dark mode* (mode fosc), com aquest blog. L’aplicació ens permet canviar entre tres temes diferents: fosc ☾, clar ☼ i segons la configuració del sistema 🖥️.
+
+<Image
+  alt={"Airbnb"}
+  src={"/images/persistint-estat-de-react-al-localstorage/theme.gif"}
+  width={795}
+  height={620}
+  unoptimized={true}
+/>
+
+Personalment, jo sempre prefereixo veure les aplicacions en mode fosc. Les interfícies fosques es visualitzen millor en la foscor, minimitzen la fatiga visual i solen ser minimalistes i elegants.
+
+Per sort, les aplicacions saben que els usuaris tenim preferències clares sobre aquest tipus de coses, i el canvi és persistent. Si canvio de mode clar a fosc i refresco la pàgina, el fosc és el nou mode per defecte; persisteix.
+
+Contràriament, és **súper molest** que els controls dels formularis no siguin persistents. Per exemple, imagineu que cada cop que féssiu una cerca d’una destinació a través d’Airbnb o Booking haguéssiu de tornar a introduir les dates d’arribada, de sortida i el nombre d’hostes... 😡
+
+En aquest tutorial veurem com podem crear un *hook* personalitzat de React per abstreure la persistència, de manera de l’aconseguim sempre que la necessitem.
+
+### Els fonaments
+
+L’ingredient principal que necessitem per persistir el nostre estat de React és el localStorage (emmagatzematge local).
+
+Així és com quedaria el nostre *hook* personalitzat:
+
+```tsx
+function useLocalStorage(defaultValue, key) {
+  const [value, setValue] = React.useState(() => {
+    const persistedValue = window.localStorage.getItem(key);
+ 
+    return persistedValue !== null
+      ? JSON.parse(persistedValue)
+      : defaultValue;
+  });
+ 
+  React.useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+ 
+  return [value, setValue];
+}
+```
+
+Per veure com funciona, aquí teniu una demostració senzilla amb un comptador persistent. Poveu a fer-hi uns quants clics i, a continuació, refresqueu aquesta pàgina:
+
+<Playground
+  title="App.js"
+  files={{
+    "/hooks.js": {
+      code: `import { useEffect, useState } from 'react';
+
+export default function useLocalStorage(defaultValue, key) {
+  const [value, setValue] = useState(() => {
+    const persistedValue = window.localStorage.getItem(key);
+
+    return persistedValue !== null
+      ? JSON.parse(persistedValue)
+      : defaultValue;
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+  
+	return [value, setValue];
+}
+`,
+      hidden: true,
+    },
+    "/App.js": `import useLocalStorage from './hooks.js';
+
+function App() {
+  const [count, setCount] = useLocalStorage(0, "count");
+
+  return (
+    <div className="App">
+      <h1>React Counter</h1>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        Increase
+      </button>
+    </div>
+  );
+}
+
+export default App;
+`
+  }}
+/>
+
+<Callout emoji="⚠️">
+  **Què passa amb el *server-side rendering* (SSR)?**
+
+  Si utilitzeu SSR o un *framework* que l’utilitza (com Next.js) i feu servir aquest *hook* a pèl, obtindreu el següent error: `ReferenceError: localStorage is not defined`
+
+  Això ocorre perquè el primer render en el servidor no té accés al localStorage de la nostra màquina i, per tant, no pot saber quin hauria de ser el valor inicial.
+
+  La solució més fàcil seria utilitzar aquest *hook* només en components de la banda del client. També podriem crear un altre *hook* per saber si l’aplicació s’ha muntat.
+
+  Podeu llegir més informació sobre el contingut dinàmic d’una aplicació SSR en aquest article de Josh Comeau titulat ['The Perils of Hydration'](https://www.joshwcomeau.com/react/the-perils-of-rehydration/).
+</Callout>
+
+#### A la pràctica
+
+Aquest *hook* assumeix que el valor que alimenta els `<input>`, `<textarea>` i el `<select>` d’un formulari es guarda en un estat de React.
+
+Per exemple, aquí teniu una implementació no persistent d’un control de formulari per canviar entre valors:
+
+```tsx
+const ThemeToggle = () => {
+  const [mode, setMode] = React.useState("system");
+   
+  return (
+    <>
+      <select onChange={ev => setMode(ev.target.value)}>
+        <option value="light">🌞</option>
+        <option value="dark">🌙</option>
+        <option value="system">🖥️</option>
+      </select>
+    </>
+  )
+}
+```
+
+Podem fer servir la nostra nova variant persistent canviant el *hook*:
+
+```tsx
+const ThemeToggle = () => {
+  const [mode, setMode] = useLocalStorage("", "theme");
+ 
+  return (
+    <>
+      <select onChange={ev => setMode(ev.target.value)}>
+        <option value="light">🌞</option>
+        <option value="dark">🌙</option>
+        <option value="system">🖥️</option>
+      </select>
+    </>
+  )
+}
+```
+
+S’utilitza exactament igual que el *hook* `useState`, però en comptes de rebre un argument, el nostre *hook* en rep dos: el valor inicial i un identificador. El segon argument s’utilitzarà per obtenir i setejar el valor persistit al localStorage. És important que cada instància del *hook* utilitzi un valor únic, però a part d’això pot ser qualsevol.
+
+### Com funciona
+
+Bàsicament, el nostre *hook* funciona com el `useState` i, a més, afegeix el següent:
+
+#### 1. Inicialització *lazy*
+
+El terme *lazy* significa, literalment, gandul. Aquest tipus d'inicialització permet que l’objecte no s’instanciï fins que es cridi per primer cop. Això ens permet passar una funció en el `useState` en comptes d’un valor, i aquesta funció només s’executarà quan es creï l'estat, el primer cop que es renderitzi el component.
+
+```tsx
+const [value, setValue] = React.useState(() => {
+  const persistedValue = window.localStorage.getItem(key);
+   
+  return persistedValue !== null
+    ? JSON.parse(persistedValue)
+    : defaultValue;
+});
+```
+
+En el nostre cas, l'utilitzem per comprovar el valor en el localStorage. Si el valor existeix, l’utilitzem com a valor inicial. Altrament, utilitzem el valor predeterminat passat al *hook* ("system", en el nostre exemple anterior).
+
+#### 2. Manteniment de l’emmagatzematge local sincronitzat
+
+Amb el `useEffect` ens assegurem d'actualitzar el localStorage sempre que canviï el valor de l’estat:
+
+```tsx
+React.useEffect(() => {
+  window.localStorage.setItem(key, JSON.stringify(value));
+}, [key, value]);
+```
+
+<Callout emoji="⚠️">
+  **Què passa amb el rendiment?**
+
+  Com que el localStorage és una API síncrona, pot causar problemes de rendiment si s’actualiza massa ràpidament.
+  
+  Si el valor de l’estat canvia moltes vegades per segon, potser ens interessarà accelerar o posposar les actualitzacions al localStorage.
+</Callout>
+
+### Desavantatges
+
+La majoria de desavantatges del localStorage no semblen ser crítics, més enllà de disminuir una mica el rendiment de l'aplicació o haver de perdre el temps serialitzant les dades (per més informació, consulteu aquest article de Randall Degges titulat ["Please Stop Using Local Storage"](https://dev.to/rdegges/please-stop-using-local-storage-1i04)).
+
+Dit això, hi ha un aspecte important: la seguretat. És important entendre que en cap cas el localStorage ha estat dissenyat com un mecanisme d’emmagatzematge segur en el navegador. Més aviat va ser pensat com un magatzem de parells clau/valor perquè els desenvolupadors fessin servir per crear aplicacions *single-page* un xic més complexes.
+
+El localStorage no s’hauria d’utilizar per desar informació sensible com identificadors de sessió/usuari, *JSON web tokens*, informació personal, targetes de crèdit, *API keys* o res que no ens interessaria veure publicat a Twitter.
+
+La vulnerabilitat rau sobretot en els atacs *cross-site scripting* (XSS) on l’atacant executa codi maliciós al navegador de l’usuari i pot robar totes les dades desades al localStorage, comprometent-les.
+
+Per tant, per curar-vos en salut i reduïr el risc d’un incident de seguretat, encara que penseu que la vostra aplicació és la més segura del món, no emmagatzemeu res sensible al localStorage.
+
+### Conclusió
+
+Aquest tutorial és un petit exemple de com els *hooks* personalitzats ens permeten crear les nostres pròpies APIs per resoldre qüestions. Tot i que existeixen [llibreries](https://usehooks.com/uselocalstorage) que resolen aquest tipus de temes per nosaltres, crec que té valor que com a desenvolupadors trobem la solució a aquests problemes per nosaltres mateixos.
