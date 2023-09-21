@@ -89,7 +89,8 @@ function Console({ isPreview, setMode }) {
   useEffect(() => {
     // listens for any message dispatched between sandpack and the bundler
     const stopListening = listen((msg) => {
-      if (msg?.status === 'idle') {
+      console.log("MSG", msg)
+      if (msg?.type === 'status' && msg.status === 'idle') {
         setReloading(false)
       }
     })
