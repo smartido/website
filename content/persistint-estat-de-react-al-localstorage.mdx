@@ -20,7 +20,7 @@ Per sort, les aplicacions saben que els usuaris tenim preferències clares sobre
 
 Contràriament, és **súper molest** que els controls dels formularis no siguin persistents. Per exemple, imagineu que cada cop que féssiu una cerca d’una destinació a través d’Airbnb o Booking haguéssiu de tornar a introduir les dates d’arribada, de sortida i el nombre d’hostes... 😡
 
-En aquest tutorial veurem com podem crear un *hook* personalitzat de React per abstreure la persistència, de manera de l’aconseguim sempre que la necessitem.
+En aquest tutorial veurem com podem crear un *hook* personalitzat de React per abstreure la persistència, de manera que l’aconseguim sempre que la necessitem.
 
 ### Els fonaments
 
@@ -102,12 +102,12 @@ export default App;
 
   La solució més fàcil seria utilitzar aquest *hook* només en components de la banda del client. També podriem crear un altre *hook* per saber si l’aplicació s’ha muntat.
 
-  Podeu llegir més informació sobre el contingut dinàmic d’una aplicació SSR en aquest article de Josh Comeau titulat ['The Perils of Hydration'](https://www.joshwcomeau.com/react/the-perils-of-rehydration/).
+  Podeu llegir més informació sobre el contingut dinàmic d’una aplicació SSR en aquest article de Josh Comeau titulat ["The Perils of Hydration"](https://www.joshwcomeau.com/react/the-perils-of-rehydration/).
 </Callout>
 
 #### A la pràctica
 
-Aquest *hook* assumeix que el valor que alimenta els `<input>`, `<textarea>` i el `<select>` d’un formulari es guarda en un estat de React.
+Aquest *hook* assumeix que el valor que alimenta els `<input>`, `<textarea>` i `<select>` d’un formulari es guarda en un estat de React.
 
 Per exemple, aquí teniu una implementació no persistent d’un control de formulari per canviar entre valors:
 
