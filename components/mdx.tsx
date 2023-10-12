@@ -40,7 +40,7 @@ export function A(props) {
 }
 
 function RoundedImage(props) {
-  return <Image alt={props.alt} className="rounded-lg" {...props} />;
+  return <Image alt={props.alt} className="border border-gray-700/50 mx-auto rounded-lg" {...props} />;
 }
 
 function Callout(props) {
@@ -54,7 +54,7 @@ function Callout(props) {
 
 function GradientText(props) {
   return (
-    <span className={`font-bold bg-gradient-to-r ${props.from} ${props.via} ${props.to} text-transparent bg-clip-text bg-300% animate-gradient`}>
+    <span className={`font-bold bg-gradient-to-r ${props.from} ${props.via} ${props.to} text-transparent bg-clip-text bg-300% ${props.isAnimated ? "animate-gradient" : ""}`}>
       {props.children}
     </span>
   );

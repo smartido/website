@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { allBlogs } from 'contentlayer/generated';
 import Views from './views';
 import { Header } from 'components/header';
+
+export const metadata: Metadata = {
+  title: 'Blog',
+  description: 'Blog',
+};
 
 function formatDate(date: string) {
   const targetDate = new Date(date);

@@ -1,0 +1,159 @@
+---
+title: 'Introduint Bun, un nou runtime/toolkit de JavaScript'
+publishedAt: '2023-10-12'
+summary: "El mes passat, l’equip de Bun va llançar una cosa que feia mesos que estava coent discretament: un nou runtime/toolkit de JavaScript. Aquesta entrada parla de quin pot ser el seu futur."
+---
+
+Voleu llegir una cosa que us farà sentir vells? Aquest any Node.js ha celebrat el seu 14è aniversari! 👵🏻🍻
+
+Des que Node.js es va presentar per primera vegada, ha travessat diverses evolucions, acumulant capes i capes d’eines unes damunt les altres. Com qualsevol sistema que creix sense un pla centralitzat, l’ecosistema de JavaScript ha esdevingut summament complex.
+
+El mes passat, l’equip de Bun va presentar la versió 1.0 d’un nou entorn d’execució (*runtime*)/conjunt d’eines (*toolkit)* de JavaScript. Aquesta no és la primera vegada que algú assumeix el repte de crear un relleu de Node.js (recordem que també hi ha [Deno](https://deno.com/)), però Bun ha generat moltes expectatives.
+
+Aquest és el sentiment que està a tot Twitter ara mateix:
+
+<Image
+  alt="Bun is exciting"
+  src="/images/bun-un-nou-runtime-de-javascript/bun-is-exciting.png"
+  width={550}
+  height={620}
+/>
+
+La gent està molt i molt entusiasmada amb Bun, però sobreviurà a Node.js? En aquesta entrada del blog hi aprofundirem per poder arribar a una opinió formada.
+
+<Callout emoji="ℹ️">
+  **Informació**
+
+  Aquesta publicació està escrita sobretot per desenvolupadors mínimament familiaritzats amb Node.js i que tinguin curiositat per l’ecosistema de JavaScript. No cal ser un expert en Node.js, però potser algunes coses et sonaran confuses si acabes d'introduir-t'hi.
+</Callout>
+
+---
+
+### Introducció ràpida a l'ecosistema de JavaScript
+
+Independentment de quin sigui el teu *background*, probablement et frustrarà l’enorme quantitat d’eines i temps que calen per arrancar, debugar i testejar un projecte de JavaScript.
+
+<Image
+  alt="Configurations"
+  src="/images/bun-un-nou-runtime-de-javascript/configs.png"
+  width={550}
+  height={620}
+/>
+
+No sorprèn, doncs, que l’ecosistema de JavaScript hagi esdevingut summament complex. Com executeu fitxers de TypeScript? Com feu el *build/bundle* del vostre codi per pujar a producció? Aquest paquet funciona amb ESM? Com carregueu configuracions només en local? He d’instal·lar dependències? Com faig que funcionin els *source maps*? 🤯
+
+Aquesta “fatiga de JavaScript” afavoreix que, sobretot per als principiants, el desenvolupament de JavaScript sovint sembli un laberint infinit d’eines i paquets. Fins i tot els desenvolupadors més experimentats reconeixen el complicat que és el desenvolupament web modern.
+
+La complexitat costa temps, sovint invertit acoblant eines entre elles o esperant que finalitzin processos. Els paquets npm triguen massa a instal·lar-se. Els tests s’haurien d’executar en segons i no en minuts.
+
+Quan el temps d’un cicle d’iteració que va de modificar un fitxer a testejar els canvis dura el suficient com per anar-te’n a esmorzar al bar, la sensació general és que alguna cosa no rutlla.
+
+### Introducció a Bun 1.0
+
+<Image
+  alt="Bun 1.0"
+  src="/images/bun-un-nou-runtime-de-javascript/bun.png"
+  width={550}
+  height={620}
+/>
+
+En termes generals, [Bun](https://bun.sh/) és un conjunt d’eines <GradientText from="from-pink-500" via="via-rose-100" to="to-rose-100">tot en un</GradientText> per executar, compilar, testejar i debugar projectes de JavaScript i TypeScript. I és molt ràpid. 🚀
+
+Si voleu saber-ne més del projecte, podeu llegir l’[entrada del blog](https://bun.sh/blog/bun-v1.0) i el [vídeo de presentació](https://www.youtube.com/watch?v=BsnCpESUEqM) que en van fer els autors. Són concisos, però aprofundeixen suficientment com per entendre per què s’ha creat Bun i quins problemes resol.
+
+Entre tot el què és Bun, hi ha alguns punts que han generat més debat a les xarxes, especialment les qüestions sobre la compatibilitat amb Node.js, el rendiment i la compatibilitat CommonJS i ESM.
+
+#### Compatibilitat amb Node.js
+
+Bun es presenta com un reemplaçament de Node.js. És a dir, que les aplicacions i paquets npm existents de Node.js també hurien de funcionar amb Bun. Però això no és ben bé així.
+
+En aquesta conversa de Twitter, en Matteo Collina, de l’equip de Node.js, es queixava que havia detectat varies persones reportant-els-hi problemes de incompatibilitat amb Bun. I en Jarred Sumner, de l'equip de Bun, admetia que tot això són *bugs* seus i demanava que els hi reportessin a ells per poder-los resoldre.
+
+<Image
+  alt="Node.js compatibility"
+  src="/images/bun-un-nou-runtime-de-javascript/node-compatibility.png"
+  width={550}
+  height={620}
+/>
+
+Per tant, l’objectiu de Bun és aconseguir la compatibilitat total amb Node.js, però actualment, tot i que és compatible amb molts mòduls, segueixen treballant per arribar al 💯. 
+
+Podeu consultar l’estat de la compatibilitat de l’última versió de Bun aquí: [bun.sh/nodejs](http://bun.sh/nodejs).
+
+#### Rendiment
+
+Les comparatives del rendiment que es poden consultar al seu lloc web són el que ha generat més *hype*. Es podria dir que són el tret més diferenciador de Bun per sobre de qualsevol altre entorn d’execució de JavaScript.
+
+<Image
+  alt="Benchmarks"
+  src="/images/bun-un-nou-runtime-de-javascript/benchmarks.png"
+  width={795}
+  height={620}
+/>
+
+Deixant al marge que Bun utilitza el motor WebKit d’Apple (Safari), en comptes del motor Google V8 (Chrome) que utilitza Node.js, el més destacable és que l’equip de Bun s’ha focalitzat molt en fer optimitzacions per millorar el rendiment en aquestes comparatives.
+
+Un exemple de fins a quin nivell han aprofundit en aquestes optimitzacions el podeu trobar en aquest [vídeo](https://www.youtube.com/watch?v=eF48Ar-JjT8), quan en Jarred Sumner explica quina és la forma més òptima de copiar un fitxer. Oh, sorpresa! Resulta que no és llegint el fitxer primer i escrivint-lo després…
+
+En relació amb aquest tema, també s’entén que la persona que es preocupa del rendiment a Node.js hagi manifestat que hi ha altres comparatives per avaluar el rendiment més enllà de les que presenta Bun… però això no treu que Bun està impulsant millores importants. 🪄💫
+
+<Image
+  alt="Speed"
+  src="/images/bun-un-nou-runtime-de-javascript/speed.png"
+  width={550}
+  height={620}
+/>
+
+#### Compatibilitat CommonJS i ESM 
+
+Un altre punt que ha generat comentaris ha estat que Bun dona suport a CommonJS (CJS) i ES Modules (ESM) alhora. Pots utilitzar `import` i `require()` dins el mateix fitxer.
+
+En aquest tuit on en Kent C. Dodds comentava la seva preocupació pel fet que donar suport a CJS pogués alentir la transició cap a ESM, en Jarred Sumner diu que amb aquesta desició Bun no està impulsant l’ús de CJS, sinó tot al contrari, prefereix ESM. No obstant, els desenvolupadors vivim en un món fragmentat, on algunes coses són CJS i altres són ESM.
+
+<Image
+  alt="CommonJs and ESM"
+  src="/images/bun-un-nou-runtime-de-javascript/commonjs.png"
+  width={550}
+  height={620}
+/>
+
+Amb aquesta desició, el què pretén Bun és absorbir aquesta complexitat existent per tal que els desenvolupadors ens en poguem despreocupar i millorar la nostra experiència d’ús.
+
+### El quadre complet 
+
+Seria desconsiderat parlar de Bun sense mencionar també altres coses:
+
+1. Bun té darrera l’empresa [Oven](https://oven.sh/) que ha aixecat un finançament de 7 milions de dòlars de inversors. Node.js hi té la [OpenJS Foundation](https://openjsf.org/), i npm el manté un equip molt petit de desenvolupadors voluntaris a qui des d’aquí enviem el nostre amor i respecte. 💖
+2. Node.js s’ha focalitzat més a afegir funcionalitats i seguretat que en rendiment perquè fer que les coses vagin més ràpid no fa diners. Els proveïdors del Cloud no tenen cap interès en millorar el rendiment de res, ja que els suposaria menys <GradientText from="from-green-500" via="via-emerald-100" to="to-green-100">*fucking money man*</GradientText>.
+3. En realitat, Bun no s’ha preocupat de la compatibilitat de tot l’ecosistema de npm. El seu enfocament ha estat desenvolupar una nova solució des de zero i treballar en preservar la compatibilitat a posteriori. Per contra, els processos de Node.js es desenvolupen sempre protegint l’ecosistema com a base.
+4. Node.js creu en estàndards i governança oberts, perquè creu que així els entorns d’execució i la infraestructura són millors. Tenir una governança oberta implica processos de presa de desicions més amplis, que escolten a tothom, però que també són més lents.
+
+### Mirant cap al futur 
+
+Bun sembla un projecte amb un futur prometedor, però sobreviurà a Node.js? Ens podem fiar d’una empresa amb ànim de lucre que pot tenir un impacte tan gran? Creieu que els inversors de Bun no voldran monetitzar la idea? 🤔
+
+Un fet que probablement suposarà una barrera per a la contribució a Bun és que utilitza [Zig](https://ziglang.org/) com a llenguatge de programació. Zig és un nou llenguatge de baix nivell i molt ben optimitzat, semblant a Rust, però que molt poca gent domina.
+
+De fet, fent una ullada a les contribucions del seu [repositori](https://github.com/oven-sh/bun/graphs/contributors) la immensa majoria recauen en el Jarred Sumner. Això suposa un risc important per al projecte, ja que si ell deixés de programar l’ecosistema quedaria bloquejat.
+
+Aquest risc és més gran quan més infraestructura hi ha que depèn d’un projecte paral•lel creat per una persona.
+
+<Image
+  alt="Infrastructure"
+  src="/images/bun-un-nou-runtime-de-javascript/modern-infrastructure.png"
+  width={550}
+  height={620}
+/>
+
+Acostuma a passar que a mesura que el projecte creix, comença a caldre fer altres coses a part de programar, com fer escalar l’empresa i la marca, obtenir beneficis, obtenir finançament, contractar gent i, en resum, portar el negoci.
+
+Si la persona que ha de prendre les desicions de negoci és responsable de la majoria del codi, arriba un punt on les dues coses entren en conflicte.
+
+Cal ser realistes amb aquests riscs i entendre la diferència que hi ha entre:
+
+1. una empresa de capital de risc, amb molt finançament, molta energia i molta inèrcia en el seus inicis; i
+2. una fundació formada per contribuïdors voluntaris que han mantingut una solució (que tot i que té els seus problemes, funciona bé) durant molt temps.
+
+Tinc molta confiança i esperança amb el futur de Bun, però ara mateix hi ha grans diferències a nivell d'estructura, incentius, longevitat i probabilitats d’èxit entre Bun i Node.js.
+
+Per això, de moment, tot i que tinc ganes de començar a utilitzar Bun en algún projecte, em preocuparia tenir un pla B sota la màniga al desplegar a producció. Ja sabeu, només per si un cas… 😄
