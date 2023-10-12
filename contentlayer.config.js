@@ -19,6 +19,10 @@ const computedFields = {
       datePublished: doc.publishedAt,
       dateModified: doc.publishedAt,
       description: doc.summary,
+      image: doc.image
+        ? `https://smartido.dev${doc.image}`
+        : `https://smartido.dev/og?title=${doc.title}`,
+      url: `https://smartido.dev/blog/${doc._raw.flattenedPath}`,
       author: {
         '@type': 'Person',
         name: 'Sara Martínez',

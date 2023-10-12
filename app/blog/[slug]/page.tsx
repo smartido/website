@@ -9,9 +9,8 @@ export async function generateMetadata({
   params,
 }): Promise<Metadata | undefined> {
   const post = allBlogs.find((post) => post.slug === params.slug);
-  if (!post) {
-    return;
-  }
+  
+  if (!post) return;
 
   const {
     title,
