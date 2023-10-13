@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
             fontSize: 46,
             fontFamily: 'Hubot',
             fontStyle: 'normal',
-            color: 'white',
+            color: '#94a3b8',
             whiteSpace: 'pre-wrap',
           }}
         >
