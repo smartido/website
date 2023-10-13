@@ -19,7 +19,7 @@ export async function generateMetadata({
     slug,
   } = post;
   
-  const ogImage = `https://smartido.dev/api/og?title=${title}`;
+  const ogImage = `https://smartido.dev/api/og?title=${title}&publishedAt=${publishedTime}`;
 
   return {
     title,
