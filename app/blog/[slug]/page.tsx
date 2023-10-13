@@ -9,7 +9,7 @@ export async function generateMetadata({
   params,
 }): Promise<Metadata | undefined> {
   const post = allBlogs.find((post) => post.slug === params.slug);
-  
+
   if (!post) return;
 
   const {
@@ -20,9 +20,7 @@ export async function generateMetadata({
     slug,
   } = post;
   
-  const ogImage = image
-    ? `https://smartido.dev${image}`
-    : `https://smartido.dev/og?title=${title}`;
+  const ogImage = `https://smartido.dev/og?title=${title}`;
 
   return {
     title,
