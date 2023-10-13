@@ -11,6 +11,14 @@ const hubot = localFont({
 export const metadata: Metadata = {
   title: 'Blog | Sara Martínez',
   description: 'Web Developer',
+  openGraph: {
+    title: 'Sara Martínez',
+    description: 'Desenvolupadora Web',
+    url: 'https://smartido.dev',
+    siteName: 'Sara Martínez',
+    locale: 'ca_ES',
+    type: 'website',
+  },
   robots: {
     index: true,
     follow: true,
@@ -21,6 +29,10 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
+  },
+  twitter: {
+    title: 'Sara Martínez',
+    card: 'summary_large_image',
   },
   icons: {
     shortcut: '/favicon.ico',
