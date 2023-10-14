@@ -16,8 +16,9 @@ function formatDate(date: string) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
+
   const postTitle = searchParams.get('title');
-  const postPublishedAt = searchParams.get('publishedAt');
+  const postPublishedAt = searchParams.get('publishedAt') as string;
   
   const fontData = await fetch(
     new URL('../../../public/fonts/HubotSans-Medium.ttf', import.meta.url),
@@ -38,33 +39,27 @@ export async function GET(req: NextRequest) {
       >
         <div
           style={{
+            marginBottom: 120,
             marginLeft: 120,
             marginRight: 120,
             display: 'flex',
+            flexDirection: 'column',
             fontSize: 86,
             fontFamily: 'Hubot',
-            fontStyle: 'normal',
             color: 'white',
             whiteSpace: 'pre-wrap',
           }}
         >
-          {postTitle}
-        </div>
-        <div
-          style={{
-            marginLeft: 120,
-            marginRight: 120,
-            marginBottom: 120,
-            marginTop: 46,
-            display: 'flex',
-            fontSize: 46,
-            fontFamily: 'Hubot',
-            fontStyle: 'normal',
-            color: '#94a3b8',
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          smartido.dev · {formatDate(postPublishedAt as string)}
+          <h1>{postTitle}</h1>
+          <div
+            style={{
+              display: 'flex',
+              fontSize: 46,
+              color: '#94a3b8',
+            }}
+          >
+            smartido.dev · {formatDate(postPublishedAt)}
+          </div>
         </div>
       </div>
     ),
@@ -75,7 +70,6 @@ export async function GET(req: NextRequest) {
         {
           name: 'Hubot',
           data: fontData,
-          style: 'normal',
         },
       ],
     }
