@@ -20,8 +20,12 @@ export async function GET(req: NextRequest) {
   const postTitle = searchParams.get('title');
   const postPublishedAt = searchParams.get('publishedAt') as string;
   
-  const fontData = await fetch(
-    new URL('../../../public/fonts/HubotSans-Medium.ttf', import.meta.url),
+  const fontDataMedium = await fetch(
+    new URL('../../../public/fonts/Hubot-Sans-Medium.ttf', import.meta.url),
+  ).then((res) => res.arrayBuffer());
+
+  const fontDataRegular = await fetch(
+    new URL('../../../public/fonts/Hubot-Sans-Regular.ttf', import.meta.url),
   ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
@@ -45,9 +49,8 @@ export async function GET(req: NextRequest) {
             display: 'flex',
             flexDirection: 'column',
             fontSize: 86,
-            fontFamily: 'Hubot',
+            fontFamily: 'Hubot-Sans-Medium',
             color: 'white',
-            whiteSpace: 'pre-wrap',
           }}
         >
           <h1>{postTitle}</h1>
@@ -55,6 +58,7 @@ export async function GET(req: NextRequest) {
             style={{
               display: 'flex',
               fontSize: 46,
+              fontFamily: 'Hubot-Sans-Regular',
               color: '#94a3b8',
             }}
           >
@@ -68,8 +72,12 @@ export async function GET(req: NextRequest) {
       height: 997,
       fonts: [
         {
-          name: 'Hubot',
-          data: fontData,
+          name: 'Hubot-Sans-Medium',
+          data: fontDataMedium,
+        },
+        {
+          name: 'Hubot-Sans-Regular',
+          data: fontDataRegular,
         },
       ],
     }
