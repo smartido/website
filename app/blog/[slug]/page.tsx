@@ -4,6 +4,7 @@ import { Mdx } from 'components/mdx';
 import { allBlogs } from 'contentlayer/generated';
 import { Header } from 'components/header';
 import Views from '../views';
+import { formatDate } from 'app/utils';
 
 export async function generateMetadata({
   params,
@@ -16,10 +17,13 @@ export async function generateMetadata({
     title,
     publishedAt: publishedTime,
     summary: description,
+    image,
     slug,
   } = post;
   
-  const ogImage = `https://smartido.dev/api/og?title=${title}&publishedAt=${publishedTime}`;
+  const ogImage = image
+    ? `https://smartido.dev/${image}`
+    : `https://smartido.dev/api/og?title=${title}&publishedAt=${publishedTime}`;
 
   return {
     title,
@@ -43,17 +47,6 @@ export async function generateMetadata({
       images: [ogImage],
     },
   };
-}
-
-function formatDate(date: string) {
-  const targetDate = new Date(date);
-
-  const fullDate = targetDate.toLocaleString('ca-es', {
-    month: 'short',
-    year: 'numeric',
-  });
-
-  return `${fullDate}`;
 }
 
 export default async function Blog({ params }) {

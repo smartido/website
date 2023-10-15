@@ -4,19 +4,9 @@ import { BlogIcon, TwitterIcon, GitHubIcon, LinkedInIcon } from 'components/icon
 import { allBlogs } from 'contentlayer/generated';
 import Views from './blog/views';
 import { Header } from 'components/header';
+import { formatDate } from './utils';
 
 export const revalidate = 60;
-
-function formatDate(date: string) {
-  const targetDate = new Date(date);
-
-  const fullDate = targetDate.toLocaleString('ca-es', {
-    month: 'short',
-    year: 'numeric',
-  });
-
-  return `${fullDate}`;
-}
 
 export default async function HomePage() {
   return (

@@ -3,22 +3,12 @@ import Link from 'next/link';
 import { allBlogs } from 'contentlayer/generated';
 import Views from './views';
 import { Header } from 'components/header';
+import { formatDate } from 'app/utils';
 
 export const metadata: Metadata = {
   title: 'Blog',
   description: 'Blog',
 };
-
-function formatDate(date: string) {
-  const targetDate = new Date(date);
-
-  const fullDate = targetDate.toLocaleString('ca-es', {
-    month: 'short',
-    year: 'numeric',
-  });
-
-  return `${fullDate}`;
-}
 
 export default async function BlogPage() {
   return (

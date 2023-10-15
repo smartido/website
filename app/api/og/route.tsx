@@ -1,27 +1,20 @@
-import { ImageResponse } from 'next/server';
-import { NextRequest } from 'next/server';
+import { ImageResponse, NextRequest } from 'next/server';
+import { formatDate } from 'app/utils';
 
 export const runtime = 'edge';
-
-function formatDate(date: string) {
-  const targetDate = new Date(date);
-
-  const fullDate = targetDate.toLocaleString('ca-es', {
-    month: 'short',
-    year: 'numeric',
-  });
-
-  return `${fullDate}`;
-}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
   const title = searchParams.get('title');
   const publishedAt = searchParams.get('publishedAt') as string;
-  
-  const fontData = await fetch(
-    new URL('../../../public/fonts/Hubot-Sans-Medium.ttf', import.meta.url),
+
+  const fontDataBold = await fetch(
+    new URL('../../../public/fonts/Mona-Sans-Bold.ttf', import.meta.url),
+  ).then((res) => res.arrayBuffer());
+
+  const fontDataMedium = await fetch(
+    new URL('../../../public/fonts/Mona-Sans-Medium.ttf', import.meta.url),
   ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
@@ -34,18 +27,18 @@ export async function GET(req: NextRequest) {
           flexDirection: 'column',
           alignItems: 'flex-start',
           justifyContent: 'flex-end',
-          backgroundImage: 'url(https://smartido.dev/og.png)',
+          backgroundImage: 'url(https://smartido.dev/og-bg.png)',
         }}
       >
         <div
           style={{
-            marginBottom: 120,
-            marginLeft: 120,
-            marginRight: 120,
+            marginBottom: 150,
+            marginLeft: 150,
+            marginRight: 150,
             display: 'flex',
             flexDirection: 'column',
-            fontSize: 86,
-            fontFamily: 'Hubot-Sans',
+            fontSize: 120,
+            fontFamily: 'Mona-Sans-Bold',
             color: 'white',
           }}
         >
@@ -53,8 +46,8 @@ export async function GET(req: NextRequest) {
           <div
             style={{
               display: 'flex',
-              fontSize: 46,
-              color: '#94a3b8',
+              fontSize: 60,
+              fontFamily: 'Mona-Sans-Medium',
             }}
           >
             smartido.dev · {formatDate(publishedAt)}
@@ -63,12 +56,16 @@ export async function GET(req: NextRequest) {
       </div>
     ),
     {
-      width: 1900,
-      height: 997,
+      width: 1920,
+      height: 1080,
       fonts: [
         {
-          name: 'Hubot-Sans',
-          data: fontData,
+          name: 'Mona-Sans-Bold',
+          data: fontDataBold,
+        },
+        {
+          name: 'Mona-Sans-Medium',
+          data: fontDataMedium,
         },
       ],
     }

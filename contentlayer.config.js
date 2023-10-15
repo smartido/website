@@ -19,7 +19,9 @@ const computedFields = {
       datePublished: doc.publishedAt,
       dateModified: doc.publishedAt,
       description: doc.summary,
-      image: `https://smartido.dev/api/og?title=${doc.title}&publishedAt=${doc.publishedAt}`,
+      image: doc.image
+        ? `https://smartido.dev${doc.image}`
+        : `https://smartido.dev/api/og?title=${doc.title}&publishedAt=${doc.publishedAt}`,
       url: `https://smartido.dev/blog/${doc._raw.flattenedPath}`,
       author: {
         '@type': 'Person',
