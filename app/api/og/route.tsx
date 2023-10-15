@@ -17,15 +17,11 @@ function formatDate(date: string) {
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
-  const postTitle = searchParams.get('title');
-  const postPublishedAt = searchParams.get('publishedAt') as string;
+  const title = searchParams.get('title');
+  const publishedAt = searchParams.get('publishedAt') as string;
   
-  const fontDataMedium = await fetch(
+  const fontData = await fetch(
     new URL('../../../public/fonts/Hubot-Sans-Medium.ttf', import.meta.url),
-  ).then((res) => res.arrayBuffer());
-
-  const fontDataRegular = await fetch(
-    new URL('../../../public/fonts/Hubot-Sans-Regular.ttf', import.meta.url),
   ).then((res) => res.arrayBuffer());
 
   return new ImageResponse(
@@ -49,20 +45,19 @@ export async function GET(req: NextRequest) {
             display: 'flex',
             flexDirection: 'column',
             fontSize: 86,
-            fontFamily: 'Hubot-Sans-Medium',
+            fontFamily: 'Hubot-Sans',
             color: 'white',
           }}
         >
-          <h1>{postTitle}</h1>
+          <h1>{title}</h1>
           <div
             style={{
               display: 'flex',
               fontSize: 46,
-              fontFamily: 'Hubot-Sans-Regular',
               color: '#94a3b8',
             }}
           >
-            smartido.dev · {formatDate(postPublishedAt)}
+            smartido.dev · {formatDate(publishedAt)}
           </div>
         </div>
       </div>
@@ -72,12 +67,8 @@ export async function GET(req: NextRequest) {
       height: 997,
       fonts: [
         {
-          name: 'Hubot-Sans-Medium',
-          data: fontDataMedium,
-        },
-        {
-          name: 'Hubot-Sans-Regular',
-          data: fontDataRegular,
+          name: 'Hubot-Sans',
+          data: fontData,
         },
       ],
     }
