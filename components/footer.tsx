@@ -107,7 +107,7 @@ export function Footer() {
             href="https://twitter.com/smartido_"
             className={customClass}
           >
-            Twitter
+            X
           </a>
           <a
             rel="noopener noreferrer"

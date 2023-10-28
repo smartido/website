@@ -19,6 +19,7 @@ const nextConfig = {
     ];
   },
   images: {
+    domains: ['smartido.dev'],
     formats: ['image/avif', 'image/webp'],
     // Twitter Profile Picture
     remotePatterns: [

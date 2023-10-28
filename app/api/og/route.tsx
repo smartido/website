@@ -62,10 +62,12 @@ export async function GET(req: NextRequest) {
         {
           name: 'Mona-Sans-Bold',
           data: fontDataBold,
+          style: 'normal'
         },
         {
           name: 'Mona-Sans-Medium',
           data: fontDataMedium,
+          style: 'normal'
         },
       ],
     }

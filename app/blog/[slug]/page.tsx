@@ -59,7 +59,7 @@ export default async function Blog({ params }) {
       <Header />
 
       <section>
-        <h1 className="text-3xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-tl from-black to-slate-500 dark:from-slate-500 dark:to-white">
+        <h1 className="text-3xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-tl from-black to-gray-500 dark:from-gray-500 dark:to-white">
           {post.title}
         </h1>
         <div className="mt-2 mb-7 flex space-x-2 text-slate-500 dark:text-slate-400">

@@ -1,0 +1,311 @@
+---
+title: 'Generant automàticament imatges Open Graph a partir de contingut dinàmic'
+publishedAt: '2023-10-28'
+summary: "Un tutorial sobre com automatitzar la creació d'imatges Open Graph per a les publicacions del vostre blog amb Vercel OG."
+---
+
+Una imatge Open Graph (OG) és la imatge que les xarxes socials (com Twitter o Facebook) extreuen d’una web per crear una previsualització quan algú comparteix un enllaç a aquesta web.
+
+Independentment de l’efectivitat o la qualitat real del contingut enllaçat, una imatge OG sol ser el primer que la gent veu d’una publicació compartida a les xarxes socials.
+
+En teoria, una millor imatge OG augmenta la freqüència amb què la gent fa clic a l’enllaç de la publicació i republica la publicació original.
+
+<FauxTweet>
+  <Image
+    alt="Faux Tweet"
+    src="https://smartido.dev/api/og?title=Generant%20automàticament%20imatges%20Open%20Graph%20a%20partir%20de%20contingut%20dinàmic&publishedAt=2023-10-28"
+    width={779}
+    height={620}
+  />
+</FauxTweet>
+
+Aquest tutorial és una guia pas a pas de com podem automatitzar la generació d’imatges OG a partir de continguts dinàmics del nostre blog.
+
+### El problema
+
+- Crear manualment una imatge OG per a cada publicació implica feina i temps a part d’escriure la publicació.
+- Automatitzar la generació d’imatges OG pot ser difícil d’implementar o pot costar diners per l’utilització d’un servei.
+
+### La solució
+
+Utilitzeu la biblioteca de codi lliure `@vercel/og`. Aquests són els avantatges:
+
+- **Fàcil d’utilitzar**: Definiu les vostres imatges amb HTML i CSS, i crea automàticament imatges dinàmiques a partir dels SVGs generats. 
+- **Assequible**: Afegeix automàticament les capçaleres que toquen a la memòria cau de l'*edge* (és a dir, el més a la vora d’on és generen les imatges), ajudant a reduir el cost i la recomputació.
+- **Ràpid**: Utilitza [Edge Functions](https://vercel.com/docs/functions/edge-functions), afavorint que les imatges es generin més ràpid i siguin reconegudes pels simuladors (com [Open Graph Debugger](https://en.rakko.tools/tools/9/)).
+- **Dinàmic**: Utilitza detalls dinàmics de la publicació com el títol i la data de publicació per generar la imatge final.
+- **Disseny flexible**: Manipula el disseny, estils i tipografia amb CSS bàsic.
+- **Múltiples opcions de *frameworks***: És compatible amb qualsevol *framework* o aplicació desplegada a Vercel.
+- **Múltiples opcions tipogràfiques**: És compatible amb l’ús de fonts i emoticones customitzades (incloent Google Fonts i altres CDNs).
+
+### Què és Vercel OG?
+
+[Vercel OG](https://vercel.com/docs/functions/edge-functions/og-image-generation) és una biblioteca que genera imatges OG de forma dinàmica i optimitzada. També proporciona un [playground](https://og-playground.vercel.app/) per testejar i previsualitzar la imatge OG generada. Podeu accedir al seu codi [aquí](https://github.com/vercel/og-image).
+
+Funciona de forma que vosaltres li passeu continguts per paràmetres de la URL, i Vercel OG us genera, còpia a la memòria cau, i retorna un fitxer d’imatge.
+
+Per exemple, la imatge de sota es genera amb l'URL següent:
+
+<Image
+  alt="Open Graph image example"
+  src="https://smartido.dev/api/og?title=Generant%20automàticament%20imatges%20Open%20Graph%20a%20partir%20de%20contingut%20dinàmic&publishedAt=2023-10-28"
+  width={779}
+  height={620}
+/>
+
+<Callout>
+  [https://smartido.dev/api/og?title=Generant%20automàticament%20imatges%20Open%20Graph%20a%20partir%20de%20contingut%20dinàmic&publishedAt=2023-10-28](https://smartido.dev/api/og?title=Generant%20automàticament%20imatges%20Open%20Graph%20a%20partir%20de%20contingut%20dinàmic&publishedAt=2023-10-28)
+</Callout>
+
+### Posant fil a l'agulla
+
+<Callout emoji="💡">
+  Aquest tutorial implementa Vercel OG pel directori `app` de Next.js 13. Per implementacions en altres *frameworks*, el codi pot variar lleugerament.
+</Callout>
+
+#### Pas 1 – Instal·lant la biblioteca Vercel OG
+
+Si utilitzeu App Router podeu saltar-vos aquest pas, ja que inclou `@vercel/og`. Altrament, executeu la següent comanda dins el directori del vostre projecte:
+
+```code
+pnpm i @vercel/og
+```
+
+#### Pas 2 – Creant l'API endpoint
+
+Creeu un API endpoint afegint un fitxer `route.tsx` al directori `api/og` a l’arrel del vostre projecte.
+
+A continuació, enganxeu el codi següent:
+
+```tsx showLineNumbers title="api/og/route.tsx"
+import { ImageResponse } from 'next/server';
+
+export const runtime = 'edge';
+ 
+export async function GET() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-end',
+          backgroundImage: 'url(https://.../og.png)',
+        }}
+      >
+        <div
+          style={{
+            marginBottom: 150,
+            marginLeft: 150,
+            marginRight: 150,
+            display: 'flex',
+            flexDirection: 'column',
+            fontSize: 120,
+            color: 'white',
+          }}
+        >
+          <h1>My post title</h1>
+          <div
+            style={{
+              display: 'flex',
+              fontSize: 60,
+            }}
+          >
+            smartido.dev · My post published date
+          </div>
+        </div>
+      </div>
+    ),
+    {
+      width: 1920,
+      height: 1080,
+    },
+  );
+}
+```
+
+- **Línia 3**: Cal utilitzar l’[Edge Runtime](https://vercel.com/docs/functions/edge-functions/edge-functions-api), ja que l’entorn d’execució per defecte de Node.js no és compatible amb `@vercel/og`.
+- **Línia 16**: Recordeu carregar la imatge de fons que voleu utilitzar per la imatge OG dins la carpeta `public` del vostre projecte i desplegar-la perquè existeixi a la ruta especificada.
+- **Línies 6-46**: Crideu el constructor `ImageReponse` passant-li com a paràmetres l’element de React i les opcions d’amplada i alçada per generar la vostra imatge. Podeu consultar-los tots a la [documentació de l’API](https://vercel.com/docs/functions/edge-functions/og-image-generation/og-image-api).
+
+Si correu l’aplicació en local, podeu cridar el vostre endpoint des del navegador amb l'URL `http://localhost:3000/api/og`.
+
+Per obtenir una URL públicament accessible al vostre endpoint desplegueu el projecte.
+
+<Callout emoji="⚠️">
+  **Limitacions**
+
+  Vercel OG limita la mida de l’empaquetat o *bundle* a un màxim de 500KB. Això inclou el vostre JSX, CSS, fonts, imatges i la resta d’*assets*. Si la mida de la vostra imatge de fons és molt gran, potser us interessarà reduir-la.
+
+  Només són compatibles flexbox (`display: flex`) i un subconjunt de propietats CSS. Altres layouts (`display: grid`) no funcionaran. Podeu consultar totes les propietats CSS compatibles a la [documentació de Satori](https://github.com/vercel/satori).
+</Callout>
+
+#### Pas 3 – Definint les metadates de l'aplicació
+
+A continuació, podeu utilitzar l’[API Metadata](https://nextjs.org/docs/app/building-your-application/optimizing/metadata) de Next.js per definir les metadades de la vostra aplicació (per exemple, les etiquetes `meta` i `link` dins el vostre element HTML `head`). Aquesta API està optimitzada per un millor SEO.
+
+```tsx showLineNumbers title="layout.tsx"
+import type { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const ogImage = 'https://.../api/og';
+  
+  return {
+    title: 'My post title',
+    openGraph: {
+      images: [{ url: ogImage }],
+    },
+  }
+}
+ 
+export default function Page() {}
+```
+
+Next.js generarà automàticament els elements `<head>` rellevants per a les vostres pàgines.
+
+```html title="Output <head>"
+<meta property="og:title" content="My post title" />
+<meta property="og:image:url" content="https://.../og.png" />
+```
+
+#### Pas 4 – Passant contingut per paràmetres de l'URL
+
+Cada cop que creeu una nova publicació al vostre blog i la pengeu a les xarxes, haureu d'actualitzar l’API endpoint amb el contingut nou. Tanmateix, si identifiqueu quines parts del vostre constructor `ImageResponse` canviaran a cada publicació, podeu passar aquests valors com a paràmetres de l’endpoint de manera que pugueu reutilitzar-lo en totes les vostres publicacions.
+
+En el nostre exemple, la imatge de la publicació es crea a partir del títol i la data de publicació de l’article. Passeu aquests continguts com a paràmeters.
+
+```tsx showLineNumbers title="api/og/route.tsx" {1,5-9,23,29}
+import { ImageResponse, NextRequest } from 'next/server';
+
+export const runtime = 'edge';
+ 
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+
+  const title = searchParams.get('title');
+  const publishedAt = searchParams.get('publishedAt') as string;
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          /* all styles again */
+        }}
+      >
+        <div
+          style={{
+            /* all styles again */
+          }}
+        >
+          <h1>{title}</h1>
+          <div
+            style={{
+              /* all styles again */
+            }}
+          >
+            smartido.dev · {publishedAt}
+          </div>
+        </div>
+      </div>
+    ),
+    {
+      width: 1920,
+      height: 1080,
+    },
+  );
+}
+```
+
+Modifiqueu també la vostra funció `generateMetadata` per obtenir les metadates que tindran valors dinàmics.
+
+```tsx showLineNumbers title="layout.tsx" {3-5,7,9,12,14,17}
+import type { Metadata } from 'next';
+ 
+type Props = {
+  params: { id: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // read route params
+  const id = params.id
+  
+  // fetch data
+  const post = await fetch(`https://.../${id}`).then((res) => res.json())
+  
+  const ogImage = `https://.../api/og?title=${post.title}&publishedAt=${post.publishedAt}`;
+
+  return {
+    title: post.title,
+    openGraph: {
+      images: [{ url: ogImage }],
+    },
+  }
+}
+ 
+export default function Page({ params }) {}
+```
+
+#### Bonus – Customitzant estils CSS
+
+Finalment, carregueu una font dins la carpeta `/fonts` a l’arrel del vostre projecte i utilitzeu-la per crear la vostra imatge OG. Només són compatibles els formats de font `ttf`, `otf` i `woff`.
+
+```tsx showLineNumbers title="api/og/route.tsx" {11-13,25,43-49}
+import { ImageResponse, NextRequest } from 'next/server';
+
+export const runtime = 'edge';
+ 
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+
+  const title = searchParams.get('title');
+  const publishedAt = searchParams.get('publishedAt') as string;
+
+  const fontData = await fetch(
+    new URL('../../fonts/Mona-Sans.ttf', import.meta.url),
+  ).then((res) => res.arrayBuffer());
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          /* all styles again */
+        }}
+      >
+        <div
+          style={{
+            /* all styles again */
+            fontFamily: 'Mona',
+          }}
+        >
+          <h1>{title}</h1>
+          <div
+            style={{
+              /* all styles again */
+            }}
+          >
+            smartido.dev · {publishedAt}
+          </div>
+        </div>
+      </div>
+    ),
+    {
+      width: 1920,
+      height: 1080,
+    },
+    fonts: [
+      {
+        name: 'Mona',
+        data: fontData,
+        style: 'normal',
+      },
+    ],
+  );
+}
+```
+
+### Conclusió
+
+Es poden fer més coses amb Vercel OG. Aquest tutorial només pretén ser un bon punt de partida per crear fàcilment les vostres propies imatges OG que atreguin més públic a veure el vostre contingut.

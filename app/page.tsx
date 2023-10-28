@@ -29,10 +29,10 @@ export default async function HomePage() {
               </div>
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-tl from-black to-slate-500 dark:from-slate-500 dark:to-white">
+              <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-transparent bg-clip-text bg-gradient-to-tl from-black to-gray-500 dark:from-gray-500 dark:to-white">
                 Sara Martínez
               </h1>
-              <h2 className="align-middle text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-tl from-black to-slate-500 dark:from-slate-500 dark:to-white">
+              <h2 className="align-middle text-lg tracking-tight text-transparent bg-clip-text bg-gradient-to-tl from-black to-gray-500 dark:from-gray-500 dark:to-white">
                 Desenvolupadora Web
               </h2>
             </div>
@@ -64,7 +64,7 @@ export default async function HomePage() {
                       <TwitterIcon />
                     </div>
                   </div>
-                  <div>Twitter</div>
+                  <div>X</div>
                 </div>
               </a>
               <a

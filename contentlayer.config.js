@@ -65,7 +65,20 @@ export default makeSource({
       [
         rehypePrettyCode,
         {
-          theme: 'one-dark-pro',
+          theme: {
+            dark: 'github-dark-dimmed',
+            light: 'github-light',
+          },
+          onVisitLine(node) {
+            // Prevent lines from collapsing in `display: grid` mode, and allow empty
+            // lines to be copy/pasted
+            if (node.children.length === 0) {
+              node.children = [{ type: 'text', value: ' ' }];
+            }
+          },
+          onVisitHighlightedLine(node) {
+            node.properties.className.push('line--highlighted');
+          },
         },
       ],
       [
