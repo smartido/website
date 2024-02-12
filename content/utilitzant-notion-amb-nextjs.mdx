@@ -63,9 +63,8 @@ function Book() {
       <span className="w-40 h-56 mb-2 relative">
         <img
           alt=""
-          fill
           src="https://bit.ly/default-image"
-          style={{ objectFit: "cover", borderRadius: "8px" }}
+          style={{ borderRadius: "8px" }}
         />
       </span>
       <div className="flex flex-col w-full text-sm">
@@ -130,7 +129,7 @@ Ara, substituim les nostres dades *mockejades* per dades reals de Notion.
 
 ### Configurant Notion
 
-Abans d’utilitzar [Notion](https://www.notion.so/) com a backend per a la vostra aplicació, necessitareu crear una integració al [dashboard d’integracions de Notion](https://www.notion.so/my-integrations).
+Abans d’utilitzar [Notion](https://www.notion.so/) com a *backend* per a la vostra aplicació, necessitareu crear una integració al [dashboard d’integracions de Notion](https://www.notion.so/my-integrations).
 
 - Feu clic al botó `+ New integration`
 - Escriviu el nom de la integració
@@ -223,7 +222,7 @@ export const fetchPages = React.cache(() => {
 });
 ```
 
-Importarem aquestes dades dins del nostre component de React i farem un map a través de la llista de llibres.
+Importarem aquestes dades dins del nostre component de React i farem un *map* a través de la llista de llibres.
 
 ```jsx
 export default async function Books() {
@@ -281,7 +280,7 @@ module.exports = {
 
 ### Desplegant a Vercel
 
-La nostra galeria d’imatges està mostrant una llista de llibres, obtinguts de Notion, i els mostra de manera bonica amb Talwind CSS. Despleguem la nostra aplicació a Vercel:
+La nostra galeria d’imatges està mostrant una llista de llibres, obtinguts de Notion, i ho fa amb uns estils bonics amb Talwind CSS. Despleguem la nostra aplicació a Vercel:
 
 - Feu *push* del vostre codi al vostre repositori de Git
 - Importeu el vostre projecte Next.js a Vercel
