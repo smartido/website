@@ -37,8 +37,6 @@ function Book({ priority, properties }) {
 export default async function Books() {
   const books = await fetchPages();
 
-  console.log("BOOKS", books)
-
   return (
     <div className="w-screen max-w-screen-2xl mx-auto absolute top-0 left-0 right-0 bg-white dark:bg-black">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8 px-8 my-16">
