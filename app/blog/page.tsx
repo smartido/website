@@ -34,7 +34,7 @@ export default async function BlogPage() {
                   block
                   overflow-hidden
                   rounded-2xl
-                  p-7
+                  p-8
                   transition
                   duration-300
                   border

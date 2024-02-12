@@ -1,0 +1,297 @@
+---
+title: "Utilitzant l'API de Notion amb Next.js"
+publishedAt: '2024-02-10'
+summary: "Un tutorial sobre com crear una aplicació Next.js fent servir l’API privada de Notion com a backend."
+---
+
+Aquest tutorial mostra com crear una aplicació Next.js que:
+
+- Obté el contingut d'una base de dades de Notion
+- Manté el contingut actualitzat sense haver de tornar a desplegar l’aplicació a Vercel
+- Inclou optimització d’imatges amb `next/image`
+- Estilitza els components fàcilment amb Tailwind CSS
+
+Jo l’he fet servir per crear [aquesta pàgina](https://www.smartido.dev/books), que conté una galeria d'imatges dels llibres que vaig llegir durant l’any passat. 📚
+
+<Image
+  alt="Books"
+  src="/images/books/books.png"
+  width={795}
+  height={620}
+/>
+
+### Configurant l'aplicació
+
+La forma més fàcil de configurar la vostra aplicació és utilitzant [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app) per clonar-vos una aplicació Next.js preconfigurada amb Tailwind CSS des dels [exemples oficials de Next.js](https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss).
+
+```MDX
+npx create-next-app --example with-tailwindcss book-gallery
+```
+
+Aquest exemple inclou:
+
+- L’última versió de Next.js
+- El Prettier configurat per formatar el codi i organitzar els noms de classe de Tailwind CSS
+- TypeScript configurat per Next.js
+- Tailwind CSS configurat per eliminar els noms de classe no utilitzats
+- Un exemple d’[API Route](https://nextjs.org/docs/pages/building-your-application/routing/api-routes)
+
+### Creant estils per la galeria de llibres
+
+Un cop tingueu Tailwind CSS configurat, podeu crear el component per mostrar la vostra galeria de llibres. Dins del fitxer `pages/index.tsx`, que és el punt d’inici de la vostra aplicació, podeu utilitzar CSS Grid per configurar el contenidor per a totes les vostres imatges.
+
+```jsx
+export default async function Books() {
+  return (
+    <div className="w-screen max-w-screen-2xl mx-auto absolute top-0 left-0 right-0 bg-white">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8 px-8 my-16">
+        {/* Books will go here */}
+      </div>
+    </div>
+  );
+}
+```
+
+A continuació, necessitareu crear un component pel llibre individual. De cada llibre, no només volem mostrar la imatge, sinó que també ens agradaria mostrar algunes dades addicionals com el títol, l’autor i una puntuació. Cada imatge també enllaçarà amb la botiga.
+
+Creem un component nou amb dades <i>mockejades</i>:
+
+```jsx
+function Book() {
+  return (
+    <a href="#" className="flex flex-col rounded-2xl p-4 border bg-zinc-50 border-gray-200/50 hover:border-black">
+      <span className="w-40 h-56 mb-2 relative">
+        <img
+          alt=""
+          fill
+          src="https://bit.ly/default-image"
+          style={{ objectFit: "cover", borderRadius: "8px" }}
+        />
+      </span>
+      <div className="flex flex-col w-full text-sm">
+        <p className="mt-4 text-sm text-slate-500">@smartido_</p>
+        <h3 className="mt-1 text-lg font-medium">Sara Martínez</h3>
+        <p className="mt-4 w-fit rounded-md py-1 px-2 bg-gray-200/50">⭐️⭐️⭐️⭐️⭐️</p>
+      </div>
+    </a>
+  )
+}
+```
+
+### Optimitzant les imatges
+
+Per afavorir els [Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals), us interessarà optimitzar les imatges. Per fer-ho, podeu aprofitar els avantatges que proporciona el [component Image](https://nextjs.org/docs/pages/building-your-application/optimizing/images) de Next.js:
+
+- **Optimització de la mida**: Serveix automàticament imatges de la mida correcta per a cada dispositiu, utilitzant formats d'imatge moderns com WebP i AVIF.
+- **Estabilitat visual**: Evita automàticament el [Cumulative Layout Shift](https://nextjs.org/learn-pages-router/seo/web-performance/cls).
+- **Càrregues de pàgina més ràpides**: Les imatges només es carreguen quan entren al *viewport*.
+
+Actualitzem el nostre component `Book` per utilitzar `next/image`:
+
+```jsx
+import Image from 'next/image';
+
+function Book() {
+  return (
+    <a href="#" target="_blank" className="flex flex-col rounded-2xl p-4 border bgzinc-50 border-gray-200/50 hover:border-black">
+      <span className="w-40 h-56 mb-2 relative">
+        <Image
+          alt=""
+          fill
+          src="https://bit.ly/default-image"
+          style={{ objectFit: "cover", borderRadius: "8px" }}
+        />
+      </span>
+      <div className="flex flex-col w-full text-sm">
+        <p className="mt-4 text-sm text-slate-500">@smartido_</p>
+        <h3 className="mt-1 text-lg font-medium">Sara Martínez</h3>
+        <p className="mt-4 w-fit rounded-md py-1 px-2 bg-gray-200/50">⭐️⭐️⭐️⭐️⭐️</p>
+      </div>
+    </a>
+  )
+}
+```
+
+Utilitzem la propietat CSS `fill` per fer que la nostra imatge s’ajusti al seu element pare.
+
+El component Image de Next.js requereix que especifiquem de quins dominis podem optimitzar les imatges. En aquest cas estem utilitzant `bit.ly` com a imatge per defecte, però podem afegir qualsevol domini a la llista de permisos dins del fitxer `next.config.js`:
+
+```jsx
+/** @type {import('next').NextConfig} */
+module.exports = {
+  reactStrictMode: true,
+  images: {
+    domains: ['bit.ly'],
+  },
+};
+```
+
+Ara, substituim les nostres dades *mockejades* per dades reals de Notion.
+
+### Configurant Notion
+
+Abans d’utilitzar [Notion](https://www.notion.so/) com a backend per a la vostra aplicació, necessitareu crear una integració al [dashboard d’integracions de Notion](https://www.notion.so/my-integrations).
+
+- Feu clic al botó `+ New integration`
+- Escriviu el nom de la integració
+- Feu clic al botó `Submit`
+
+Un cop s’hagi creat la vostra integració, guardeu l’API secret (necessària per poder fer peticions d’API Notion) com a [variable d'entorn](https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables) dins d'un nou fitxer `.env` dins de la vostra aplicació Next.js:
+
+```MDX
+NOTION_SECRET=your-secret-here
+```
+
+A continuació, instal·leu el client de Notion:
+
+```MDX
+npm i @notionhq/client
+```
+
+Finalment, podem crear un nou client dins de `lib/notion.ts` i connectar-nos a Notion mitjançant la nostra variable d'entorn:
+
+```jsx
+import { Client } from "@notionhq/client";
+
+export const notion = new Client({
+  auth: process.env.NOTION_SECRET,
+});
+```
+
+### Afegint dades a Notion
+
+Notion fa que resulti molt senzill organitzar dades en pàgines i blocs, i ofereix l’opció de crear una [base de dades](https://www.notion.so/help/guides/creating-a-database) amb pocs clics. Dins del vostre *workspace* de Notion, creu una taula per les vostres imatges:
+
+- Feu clic al botó `+ New page` i seleccioneu `Table` com a tipus de base de dades
+- Seleccioneu `+ New database` dins de `Select a data souce`
+- Anomeneu la primera columna `title`, que és on entrareu els vostres ítems
+- Afegiu les columnes `author` (de tipus **Text**), `rating` (de tipus **Select** amb opcions de 1 a 5 estrelles), `link` i `cover` (de tipus **URL**).
+
+Un cop afegiu contingut a la vostra base de dades, podria quedar [així](https://smartido.notion.site/smartido/154b0056ae034fb7a2a5e9efc510a3db?v=0a5696bd6001424c8c16dc9131f6834e).
+
+<Image
+  alt="Books"
+  src="/images/books/database.png"
+  width={795}
+  height={620}
+/>
+
+Per tal que la vostra integració pugui fer peticions a la base de dades, li heu de donar permís per llegir/escriure a aquesta base de dades específica.
+
+- Des de la vostra base de dades de Notion, feu clic al menú `...` a l’extrem superior dret de la pàgina
+- Seleccioneu l’opció `+ Add Connections`
+- Busqueu la vostra integració i seleccioneu-la
+
+Finalment, afegiu una nova variable d’entorn amb l’ID de la base de dades.
+
+```MDX
+NOTION_SECRET=your-secret-here
+NOTION_DATABASE_ID=your-database-id-here
+```
+
+<Callout emoji="👍">
+  Per trobar l’ID de base de dades de Notion, navegueu a la seva URL. L'ID és la cadena de 32 caràcters de l'URL que es troba entre la barra inclinada que segueix el nom del *workspace* i el signe d'interrogació. 
+  <Image
+    alt="Books"
+    src="/images/books/secret.png"
+    width={795}
+    height={100}
+  />
+</Callout>
+
+### Obtenint dades de Notion
+
+Prèviament ja hem configurat el nostre client de Notion al fitxer `lib/notion.ts`, de manera que ara ja podem obtenir tots els llibres de la nostra base de dades:
+
+```jsx
+import { Client } from "@notionhq/client";
+import React from "react";
+import { DatabaseObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+
+export const notion = new Client({
+  auth: process.env.NOTION_TOKEN,
+});
+
+export const fetchPages = React.cache(() => {
+  return notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_ID!,
+  }).then((res) => (
+    res.results as DatabaseObjectResponse[] | undefined
+  )).catch((error) => {
+    console.log(`Notion API error: ${error.status}`)
+  });
+});
+```
+
+Importarem aquestes dades dins del nostre component de React i farem un map a través de la llista de llibres.
+
+```jsx
+export default async function Books() {
+  const books = await fetchPages();
+
+  return (
+    <div className="w-screen max-w-screen-2xl mx-auto absolute top-0 left-0 right-0 bg-white">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8 px-8 my-16">
+        {books?.map((book, i) => (
+          <Book key={book.id} {...book} />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+Després de recórrer tot el llistat, podem actualitzar el component `Book` per substituir les dades *mockejades*.
+
+```jsx
+function Book({ properties }) {
+  const { title, author, link, cover, rating } = properties;
+
+  return (
+    <a href="#" target="_blank" className="flex flex-col rounded-2xl p-4 border bgzinc-50 border-gray-200/50 hover:border-black">
+      <span className="w-40 h-56 mb-2 relative">
+        <Image
+          alt=""
+          fill
+          src={cover.url}
+          style={{ objectFit: "cover", borderRadius: "8px" }}
+        />
+      </span>
+      <div className="flex flex-col w-full text-sm">
+        <p className="mt-4 text-sm text-slate-500">{author.rich_text[0].text.content}</p>
+        <h3 className="mt-1 text-lg font-medium">{title.title[0].text.content}</h3>
+        <p className="mt-4 w-fit rounded-[8px] py-1 px-2 bg-gray-200/50>{rating.select.name}</p>
+      </div>
+    </a>
+  )
+}
+```
+
+Finalment, necessitarem actualitzar la nostra llista de permisos per l'optimització d'imatges per incloure l'URL de la imatge d'Amazon:
+
+```jsx
+/** @type {import('next').NextConfig} */
+module.exports = {
+  reactStrictMode: true,
+  images: {
+    domains: ['m.media-amazon.com'],
+  },
+};
+```
+
+### Desplegant a Vercel
+
+La nostra galeria d’imatges està mostrant una llista de llibres, obtinguts de Notion, i els mostra de manera bonica amb Talwind CSS. Despleguem la nostra aplicació a Vercel:
+
+- Feu *push* del vostre codi al vostre repositori de Git
+- Importeu el vostre projecte Next.js a Vercel
+- Afegiu les vostres variables d’entorn durant la importació
+- Cliqueu “Deploy”
+
+Vercel detectarà automàticament que esteu utilitzant Next.js i activarà la configuració correcta per al vostre desplegament. Finalment, la vostra aplicació es desplegarà en un URL acabada amb .vercel.app o en el domini que tingueu [smartido.dev/books](https://www.smartido.dev/books).
+
+Per exemple, si afegiu un nou llibre a la taula, es mostrarà a la vostra aplicació desplegada sense tornar a fer *build* de l’aplicació.
+
+### Conclusió
+
+En aquest tutorial, hem creat una aplicació Next.js fent servir l’API privada de Notion com a *backend* per mostrar una llista d’imatges carregades dinàmicament des de Notion i que s’actualitza cada cop que les dades es modifiquen.

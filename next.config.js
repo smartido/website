@@ -19,7 +19,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ['smartido.dev'],
+    domains: ['smartido.dev', 'm.media-amazon.com'],
     formats: ['image/avif', 'image/webp'],
     // Twitter Profile Picture
     remotePatterns: [
