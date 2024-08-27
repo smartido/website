@@ -172,6 +172,7 @@ export function Playground(props) {
         }
       }}
       files={props.files}
+      options={props.options}
     >
       <SandpackLayout className="!block !rounded-none sm:!rounded-lg !-mx-4 sm:!mx-0">
         <TitleBar title={props.title} />

@@ -1,0 +1,304 @@
+---
+title: 'CSS al 2024'
+publishedAt: '2024-07-15'
+summary: "Mai havia estat tan fàcil com ara escriure estils amb CSS! Aquest article aprofundeix en l’ecosistema de CSS i en quines eines ens poden ser útils."
+---
+
+Els últims mesos han marcat l'inici d'una època daurada per a la interfície d'usuari web. Els navegadors han adoptat noves capacitats de plataforma, afegint suport a més funcions de personalització 💅 que mai.
+
+Per exemple, algunes incorporacions amb més impacte han estat les següents: [container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries), [`:has()`](https://developer.chrome.com/blog/has-m105), [subgrid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Subgrid), [dynamic viewport units](https://web.dev/blog/viewport-units), [color spaces](https://developer.chrome.com/blog/meet-the-new-css-color-spaces), [nesting](https://developer.chrome.com/docs/css-ui/css-nesting) i [cascade layers](https://developer.mozilla.org/en-US/docs/Web/CSS/@layer).
+
+A més, existeixen molts *frameworks* i compiladors per ajudar a optimitzar el rendiment de càrrega del CSS. I també hi ha moltes eines CSS força potents i ràpides de les quals és probable que n’hagueu sentit parlar. ✨
+
+Aquesta entrada del blog és un recull dels meus apunts i reflexions sobre l'ecosistema CSS i les eines que estic utilizant actualment.
+
+<Callout emoji="ℹ️">
+  **Informació**
+
+  Aquest article està escrit per desenvolupadors front-end / full-stack. Concretament, pels que gaudeixen fent servir *frameworks* de JavaScript moderns com React i tenen curiositat per l’ecosistema de CSS.
+</Callout>
+
+
+---
+
+### Bones pràctiques en CSS
+
+Seguir bones pràctiques alhora de crear estils amb CSS pot marcar una gran diferència en la rapidesa de càrrega, l'escalabilitat i la mantenibilitat de les vostres aplicacions web. ⚡
+
+Això es pot traduir tant en una millor experiència d'usuari (UX) com experiència de desenvolupador (DX).
+
+Aquí teniu alguns punts que val la pena l'esforç d'aconseguir:
+
+- **Fitxers de mida petita** — Els fulls d’estil s’han de carregar el més ràpid possible. Com més gran sigui un full d’estil, més temps necessitarà per descarregar-se i processar-se.
+- [**Capçaleres d’emmagatzematge a la memòria cau ben configurades**](https://simonhearne.com/2022/caching-header-best-practices/) — Els fulls d’estil no s’han de tornar a descarregar tret que es modifiquin. Les capçaleres d’emmagatzematge a la caché permeten indicar als navegadors quan poden reutilitzar un full d’estil que ja han descarregat.
+- [**Canvis de disseny optimitzats**](https://web.dev/articles/optimize-cls) — El contingut de la pàgina hauria de tenir un canvi de disseny acumulatiu (*Cumulative Layout Shift, CLS*) mínim o nul. És a dir, no hauria de “moure’s” ni “desplaçar-se” inesperadament.
+- [**Bones pràctiques per l’ús de fonts**](https://web.dev/articles/font-best-practices) — Les fonts tipogràfiques s'han de carregar el més ràpid possible i minimitzant el canvi de disseny acumulatiu.
+
+Què podem fer per aconseguir-ho?
+
+- Netejar estils no utilitzats i comprimir fitxers CSS per empetitir-los.
+- Generar noms de fitxers amb *hash* per un emmagatzematge a la caché segur.
+- Agrupar fitxers CSS per tal de realitzar menys peticions a la xarxa.
+- Prevenir les col·lisions en els noms de classe per evitar les regresions visuals.
+- Utilitzar sistemes tipus [BEM](https://getbem.com/) per posar noms de classe clars, fàcils d’entendre i de mantenir.
+- Definir dreceres i variables per tenir facilitat per adoptar el sistema de disseny o el/s tema/es.
+- Rebre suggeriments de l'editor amb suport de TypeScript, autocompletat i *linting*.
+- Rebre suggeriments de l'editor en temps de compilació sobre com resoldre errors (per exemple, comprovació de tipus, codi innaccessible, variables no utilitzades, *linting*...).
+
+---
+
+### CSS al 2024
+
+El CSS va començar com un mode de separar el contingut de les pàgines web del seu disseny. Amb el temps, ha evolucionat tant en complexitat com en capacitats fins al punt que mai havia estat tan fàcil com ara escriure estils sense utilitzar eines addicionals.
+
+Vegem un exemple ràpid.
+
+Així és com funciona normalment l’HTML i el CSS. S’aplica una classe a l’HTML, i aquesta classe s’estilitza amb CSS. Sempre que aquest CSS s'apliqui al codi HTML, el color del tag `<h1>` serà blanc.
+
+A més, aquest codi utilitza algunes funcions avançades de CSS (com [container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries) i [nesting](https://developer.chrome.com/docs/css-ui/css-nesting)) compatibles amb el navegador sense cap pas de *build*.
+
+<Playground
+  files={{
+    "/App.js": `export default function App() {
+  return (
+    <body>
+      <header class="header">
+        <h1>El meu blog</h1>
+      </header>
+      <main>
+        <article class="article">
+          <h2 class="article-title">CSS al 2024</h2>
+          <p class="article-content">
+            Mai havia estat tan fàcil com ara escriure estils amb CSS! Aquest article aprofundeix en l’ecosistema de CSS i en quines eines ens poden ser útils.
+          </p>
+        </article>
+        <article class="article">
+          <h2 class="article-title">Utilitzant l'API de Notion amb Next.js</h2>
+          <p class="article-content">
+            Un tutorial sobre com crear una aplicació Next.js fent servir l’API privada de Notion com a backend.
+          </p>
+        </article>
+        <article class="article">
+          <h2 class="article-title">Com vaig crear el meu blog amb Next.js</h2>
+          <p class="article-content">
+            Una visió general de com vaig escollir les tecnologies, com vaig prendre decisions de disseny i quins recursos vaig trobar útils.
+          </p>
+        </article>
+      </main>
+      <footer class="footer">
+        <p>&copy; 2024 El meu blog</p>
+      </footer>
+    </body>
+  )
+}`,
+    "/styles.css": {
+      code: `:root {
+  --bg-color: #1e90ff;
+  --primary-text-color: #1a1e23;
+  --secondary-text-color: #303741;
+  --font-family: system-ui;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  font-family: var(--font-family);
+}
+
+.header,
+.footer {
+  background-color: var(--bg-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.article {
+  background-color: white;
+  border: 1px solid whitesmoke;
+  border-radius: 12px;
+  container-type: inline-size;
+  margin: 1rem;
+  padding: 1rem;
+
+  & .article-title {
+    color: var(--primary-text-color);
+    font-size: 1em;
+    margin: 0 0 1rem 0;
+    text-wrap: balance;
+  }
+
+  & .article-content {
+    color: var(--secondary-text-color);
+  }
+}
+
+@container (min-inline-size: 500px) {
+  .article {
+    padding: 1.5rem;
+
+    & .article-title {
+      font-size: 1.25em;
+    }
+  }
+}`
+    }    
+  }}
+/>
+
+No obstant: això no vol dir que no necessiteu eines com preprocessadors CSS, com Sass o Less. Dependrà del context. Probablement, per complir els punts que ajuden a millorar l’UX, la DX i la mantenibilitat dels estils comentats a l'apartat anterior, necessitareu un procés de compilació.
+
+#### Compilació
+
+És poc probable que tots els vostres usuaris tinguin les últimes versions del navegador, però, tot i així, sempre hi haurà alguna nova sintaxi que encara no serà compatible amb tots els navegadors que voldreu utilitzar.
+
+Podeu escriure manualment regles [@supports](https://developer.mozilla.org/en-US/docs/Web/CSS/@supports) per comprovar la compatibilitat amb els navegadors. Així, si una característica és adoptada per un navegador la podeu oferir, altrament podeu tenir un altre estil.
+
+Però, a part que això només resol alguns problemes, si sou com jo, optimitzar manualment els fitxers de CSS us pot semblar una tortura. 😅
+
+Per què no deixar que ho gestioni un compilador?
+
+#### CSS i React Server Components
+
+“React Server Components” és un nou paradigma de React que ens ofereix un nou tipus de component, el *Server Component*. Els Server Components es renderitzen exclusivament en el servidor. El seu codi no s’inclou ni en els nostres *bundles* de JS.
+
+A més, al maig del 2023 Vercel va anunciar el llançament de la versió estable de [Next.js 13](https://nextjs.org/blog/next-13-4), convertint-se en el primer *framework* de React construit sobre React Server Components.
+
+Això va suposar un gran què! Que RSC (React Server Components) oferís oficialment una forma d’escriure codi exclusiu del servidor en React obria noves oportunitats.
+
+Però no tot són flors i violes. RSC suposa un gran canvi en el funcionament de React, i algunes de les llibreries i eines existents s’han hagut de refer o els segueix faltant suport.
+
+Per exemple, les llibreries CSS-in-JS més populars com styled-components i Emotion no són totalment compatibles amb aquesta nova visió de React, i realment és una mica trist el fet de no disposar d'un camí clar a seguir al respecte.
+
+Afortunadament, existeixen altres solucions CSS totalment compatibles amb els React Server Components que comentarem a continuació. Som-hi!
+
+----
+### El món de les solucions CSS
+
+#### CSS modules
+
+Si no esteu familiaritzats amb els CSS Modules, són una petita abstracció sobre CSS.
+
+Aquí teniu un petit exemple:
+
+<Playground
+  files={{
+    "/App.js": `import styles from './styles.module.css'
+ 
+export default function App() {
+  return <button className={styles.pinkButton}>Hello World</button>
+}`,
+"/styles.module.css": {
+      code: `.pinkButton {
+  background-color: pink;
+  font-size: 2.25rem;
+}`,
+    }
+  }}
+/>
+
+Segons la definició del [repositori](https://github.com/css-modules/css-modules) oficial, “Un CSS Module és un fitxer CSS on tots els noms de classe i d’animació tenen un àmbit local per defecte”. Podeu tractar-los pràcticament com el CSS pur, però sense preocupar-vos de tenir noms de classe únics a nivell global. Durant el pas de compilació, els noms genèrics com `.pinkButton` es transformen en noms únics com `._20WEds96_Ee1ra54-24ePy`.
+
+El més important és que els CSS Modules compleixen la majoria dels punts que ajuden a [millorar l’UX i la DX](https://www.smartido.dev/blog/css-al-2024#bones-pràctiques-en-css). Són una de les opcions més populars que existeixen i **són compatibles amb pràcticament tots els *bundlers* i *frameworks* moderns** com Next.js.
+
+#### Tailwind CSS
+
+[Tailwind](https://tailwindcss.com/) utilitza un compilador per generar només les classes d’utilitat. És a dir, tot i que el *framework* inclou molts noms de classe, només s’inclouen a l’arxiu de CSS aquells que s’utilitzen (per exemple, `text-2xl text-purple-400`).
+
+El vostre *bundle* mai serà més gran que les classes de Tailwind que utilitzeu. És molt poc probable, per no dir gairebé impossible, que les utilitzeu totes. Per tant, l'arxiu de CSS generat tindrà un tamany màxim fixat, que es reduirà, comprimirà i s’emmagatzemarà a la caché per al millor rendiment.
+
+A continuació es mostra com es veuen els estils amb Tailwind:
+
+<Playground
+  files={{
+    "/App.js": `export default function App() {
+  return <h1 className="text-2xl text-purple-400">Hello World</h1>
+}`
+  }}
+  options={{
+    externalResources: ["https://cdn.tailwindcss.com"]
+  }}
+/>
+
+Quan treballo amb CSS, intento que tots els estils d’un component determinat es trobin en un sol lloc. No em sembla pràctic haver de buscar a través de tota l’aplicació per trobar els CSS que podrien aplicar a un element determinat.
+
+Aquest és un dels punts forts de Tailwind; tots els estils estan col·locats junts, en el propi element. No ens hem de preocupar que hi hagi algun altre component que “prengui” i apliqui els estils a un element que no li tocaria.
+
+A més, hi ha varis plugins i configuracions de Tailwind que en milloren la DX:
+
+- [**Tailwind CSS IntelliSense**](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) per autocompletar els noms de classes, remarcar la sintaxi i *linting*.
+- [**Integració amb Prettier**](https://tailwindcss.com/docs/editor-setup#automatic-class-sorting-with-prettier) per ordenar automàticament els noms de classes.
+
+<Callout emoji="💡">
+  **Aprofundint més**
+
+  En aquest entrada de blog m'he centrat en els detalls de Tailwind més rellevants per a poder entendre la comparació i compatibilitat amb altres solucions de CSS. No obstant, si voleu saber més sobre els avantatges i desavantatges de Tailwind, tinc una altra entrada al blog que els explora amb més profunditat:
+
+  [Com vaig crear el meu blog amb Next.js](https://www.smartido.dev/blog/com-vaig-crear-el-meu-blog-amb-nextjs#tailwind-css)
+</Callout>
+
+#### Llibreries CSS-in-JS
+
+El fonament de les llibreries CSS-in-JS com [styled-components](https://styled-components.com/) o [Emotion](https://emotion.sh/docs/introduction) és que permeten escriure CSS directament dins dels components de React.
+
+Aquí teniu un exemple ràpid:
+
+```tsx
+import styled from 'styled-components';
+
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: tomato;
+`;
+
+export default function App() {
+  return (
+    <Title>
+      Hello World!
+    </Title>
+  );
+}
+```
+
+En comptes de col·locar el CSS en una classe com `.title`, s’adjunta aquest CSS a un component React. Això és el que fa especials els styled-components; els components són l’element reutilitzable, no les classes.
+
+`styled.h1` és una funció que genera dinàmicament un nou component de React, i assignem aquest component a una variable anomenada `Title`. Llavors podem utilitzar aquest component de React de la mateixa manera que utilitzariem qualsevol altre component de React. Renderitzarà un tag `<h1>` que té un text vermell.
+
+Quan estenem el model mental dels components al nostre CSS, guanyem sobretot dos aspectes claus:
+
+- La capacitat de saber, amb seguretat, si és segur eliminar una declaració CSS (no hi ha la possibilitat que afecti a una altra part de l’aplicació).
+- Una manca total de problemes d'especificat alhora d’aplicar estils (no hi ha la possibilitat que una declaració tingui zero efecte perquè un altre estil l’estigui sobreescrivint, o sigui “més específic” que un altre i el guanyi).
+
+#### Llibreries Zero-Runtime CSS-in-JS
+
+Hi ha 2 desavantatges amb la majoria de llibreries CSS-in-JS:
+
+1. Existeix una incompatibilitat fonamental entre els React Server Components i les llibreries CSS-in-JS, consistent en què aquestes llibreries estan dissenyades per executar-se en el navegador, mentre que els React Server Components mai toquen el navegador.
+
+2. Les llibreries CSS-in-JS ens permeten crear de forma dinàmica components de React amb CSS adjunt. Funcionen convertint els estils escrits en JS en CSS cada cop que el component es renderitza. Això té un cost d’execució i és el motiu pel qual aquestes llibreries estan passant a ser “zero runtime”.
+
+Per resoldre aquestes qüestions, s’estan desenvolupant varies llibreries que ofereixen una API semblant als styled-components, però amb total compatibilitat amb els React Server Components! ✨
+
+En comptes d’estar lligades al cicle de vida de React, aquestes eines han adoptat un enfocament diferent; tot el processament es realitza en temps de compilació.
+
+Les aplicacions modernes de React tenen un pas de *build*, on convertim TypeScript/JSX en JavaScript i empaquetem milers de fitxers individuals en un grapat de paquets. Això es produeix quan es desplega la nostra aplicació, abans que comenci a executar-se en producció. Per què no processem els nostres components amb els estils durant aquest pas, en comptes de fer-ho en temps d'execució?
+
+Aquesta és la idea central rere totes les llibreries “zero runtime”. Aquí teniu una petita llista amb alguns projectes interessants:
+
+- [Linaria](https://github.com/callstack/linaria) — Creada al 2017, Linaria és una llibreria que durant el pas de *build* transforma el codi i mou tots els estils a CSS Modules. Nosaltres escribim styled-components, i Linaria els preprocessarà en CSS Modules, que després es processaran en CSS pur. Tot això passa en temps de compilació. El més important és que, com hem vist, CSS Modules tenen molt suport
+- [Panda CSS](https://github.com/chakra-ui/panda) — Aquesta llibreria està desenvolupada per la gent que va crear Chakra UI, una biblioteca de components força popular. Igual que Linaria, Panda CSS es compila. però en comptes de compilar-se en CSS Modules es compila en classes d’utilitat semblants a les de Tailwind.
+- [StyleX](https://github.com/facebook/stylex/) — Utilitzada per totes les pàgines de Meta: Facebook, Instagram, WhatsApp, i Threads. StyleX utilitza un plugin de Babel per trobar i extreure els estils i convertir-los en classes atòmiques en temps de compilació.
+
+---
+
+### Conclusió
+
+Quina aproximació haurieu de fer servir? No ho sé. 😅
+
+Cada enfocament té els seus avantatges i inconvenients. Depèn totalment del context en el qual estigueu desenvolupant. L’important és seleccionar les eines que ens permetran desenvolupar millor, a un bon ritme i tenint en compte tot el context.
+
+Finalment, no oblideu que els navegadors web només entenen el CSS pur. Totes les eines maravelloses que utilitzeu (Bootstrap, Tailwind, Sass, llibreries CSS-in-JS) produeixen Vanilla CSS pel navegador. Si voleu ser productius amb aquestes eines, necessiteu entendre com funciona CSS.
+
+
