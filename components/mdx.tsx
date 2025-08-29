@@ -82,13 +82,48 @@ function FauxTweet(props) {
   )
 }
 
+function Palette(props) {
+  return (
+    <div className="rounded-2xl overflow-hidden w-full mt-8">
+      <div className="grid [grid-template-columns:1fr_1fr_1fr] h-full max-h-[314px] overflow-hidden">
+        <Link className="relative h-[280px]" href={props.image1.href} rel="noopener noreferrer" target="_blank">
+          <Image alt="Image 1" className="relative w-full h-full object-cover m-0" src={props.image1.src} height={500} width={500} />
+        </Link>
+        <Link className="relative h-[280px]" href={props.image2.href} rel="noopener noreferrer" target="_blank">
+          <Image alt="Image 1" className="relative w-full h-full object-cover m-0" src={props.image2.src} height={500} width={500} />
+        </Link>
+        <Link className="relative h-[280px]" href={props.image3.href} rel="noopener noreferrer" target="_blank">
+          <Image alt="Image 1" className="relative w-full h-full object-cover m-0" src={props.image3.src} height={500} width={500} />
+        </Link>
+      </div>
+      <div
+        className={`flex items-center justify-between px-8 py-6 text-white ${Array.isArray(props.color.bg) ? "bg-gradient-to-r" : ""}`}
+        style={
+          Array.isArray(props.color.bg)
+            ? { backgroundImage: `linear-gradient(to right, ${props.color.bg[0]}, ${props.color.bg[1]})`}
+            : { backgroundColor: props.color.bg }
+        }
+      >
+        <div>
+          <div>{props.color.pantoneId}</div>
+          <div className="text-2xl font-semibold">{props.color.pantoneName}</div>
+        </div>
+        <div className="text-3xl font-semibold">
+          {props.year}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const mdxComponents = {
   Image: RoundedImage,
   a: A,
   Callout,
   FauxTweet,
   GradientText,
-  Playground
+  Playground,
+  Palette,
 };
 
 interface MdxProps {
